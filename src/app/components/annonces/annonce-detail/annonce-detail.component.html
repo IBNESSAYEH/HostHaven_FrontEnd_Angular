@@ -1,0 +1,122 @@
+<!-- src/app/features/annonces/annonce-detail/annonce-detail.component.html -->
+<div class="min-h-screen bg-base-200">
+  @if (isLoading) {
+    <div class="flex justify-center items-center min-h-[400px]">
+      <span class="loading loading-spinner loading-lg"></span>
+    </div>
+  } @else if (error) {
+    <div class="alert alert-error max-w-2xl mx-auto mt-8">
+      <span>{{error}}</span>
+    </div>
+  } @else if (annonce) {
+    <!-- Property Header -->
+    <div class="bg-base-100 shadow-lg py-6">
+      <div class="container mx-auto px-4">
+        <div class="flex justify-between items-start">
+          <div>
+            <h1 class="text-3xl font-bold mb-2">{{annonce.title}}</h1>
+            <div class="flex items-center gap-4">
+              <span class="flex items-center text-gray-600">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
+                </svg>
+                {{annonce.city.name}}
+              </span>
+              <span class="badge badge-primary">{{annonce.type.name}}</span>
+              <span class="badge badge-secondary">{{annonce.category.name}}</span>
+            </div>
+          </div>
+          <div class="text-right">
+            <div class="text-3xl font-bold text-primary">${{annonce.monthPrice}}</div>
+            <div class="text-gray-600">per month</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Image Gallery -->
+    <div class="container mx-auto px-4 py-8">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <!-- Main Image -->
+        <div class="aspect-w-16 aspect-h-9 rounded-lg overflow-hidden">
+          <img
+            src="assets/images/pixlr-image-generator-1ebfe583-0068-4415-9b35-5330d6ac9f10.png"
+            [alt]="annonce.title"
+            class="object-cover w-full h-full"
+          >
+        </div>
+
+        <!-- Property Details -->
+        <div class="space-y-6">
+          <div class="prose max-w-none">
+            <h3 class="text-xl font-semibold">Description</h3>
+            <p>{{annonce.description}}</p>
+          </div>
+
+          <!-- Features Grid -->
+          <div class="grid grid-cols-2 gap-4">
+            <div class="card bg-base-100 shadow-sm">
+              <div class="card-body p-4">
+                <div class="flex items-center gap-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
+                  </svg>
+                  <span>{{annonce.caracteristiques.numberRooms}} Rooms</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="card bg-base-100 shadow-sm">
+              <div class="card-body p-4">
+                <div class="flex items-center gap-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd" />
+                  </svg>
+                  <span>{{annonce.caracteristiques.surface}}m²</span>
+                </div>
+              </div>
+            </div>
+
+            @if (annonce.caracteristiques.parking) {
+              <div class="card bg-base-100 shadow-sm">
+                <div class="card-body p-4">
+                  <div class="flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary" viewBox="0 0 20 20" fill="currentColor">
+                      <path fill-rule="evenodd" d="M10 2a4 4 0 00-4 4v1H5a1 1 0 00-.994.89l-1 9A1 1 0 004 18h12a1 1 0 00.994-1.11l-1-9A1 1 0 0015 7h-1V6a4 4 0 00-4-4zm2 5V6a2 2 0 10-4 0v1h4zm-6 3a1 1 0 112 0 1 1 0 01-2 0zm7-1a1 1 0 100 2 1 1 0 000-2z" clip-rule="evenodd" />
+                    </svg>
+                    <span>Parking Available</span>
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+
+          <!-- Contact Information -->
+          <div class="card bg-base-100 shadow-lg">
+            <div class="card-body">
+              <h3 class="card-title">Contact Host</h3>
+              <div class="space-y-2">
+                <p class="flex items-center gap-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
+                    <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+                  </svg>
+                  {{annonce.email}}
+                </p>
+                <p class="flex items-center gap-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
+                  </svg>
+                  {{annonce.phone}}
+                </p>
+              </div>
+              <div class="card-actions justify-end mt-4">
+                <button class="btn btn-primary">Contact Host</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+</div>

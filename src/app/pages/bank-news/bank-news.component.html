@@ -1,0 +1,32 @@
+<div class="max-w-4xl mx-auto px-4 py-4">
+  <div class="carousel carousel-center w-full shadow-2xl rounded-2xl">
+    @for(news of newsData; track i; let i = $index) {
+      <div class="carousel-item w-full">
+        <div class="hero min-h-[400px] bg-gradient-to-r" [ngStyle]="{'background': news.gradient}">
+          <div class="hero-content flex-col lg:flex-row gap-6 px-4">
+            <img [src]="news.imageUrl"
+                 [alt]="news.title"
+                 class="w-full lg:w-[250px] h-[180px] object-cover rounded-xl shadow-lg transform hover:scale-105 transition-transform duration-300" />
+            <div class="max-w-xl text-white">
+              <div class="text-sm font-semibold opacity-90 mb-2">{{news.category}}</div>
+              <h1 class="text-2xl lg:text-3xl font-bold mb-3 leading-tight">{{news.title}}</h1>
+              <p class="text-sm opacity-90 mb-4">{{news.description}}</p>
+              <button class="btn btn-sm bg-white hover:bg-opacity-90 border-none text-inherit"
+                      [ngStyle]="{'color': news.buttonColor}">
+                {{news.buttonText}}
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+  <div class="flex justify-center w-full py-2 gap-2">
+    @for(item of newsData; track i; let i = $index) {
+      <a [href]="'#slide' + i" class="btn btn-xs bg-blue-900 text-white">{{i + 1}}</a>
+    }
+  </div>
+</div>

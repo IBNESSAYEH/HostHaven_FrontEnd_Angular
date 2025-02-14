@@ -13,6 +13,10 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
+            "stylePreprocessorOptions": {
+              "includePaths": ["src/styles"]
+            },
+          
             "outputPath": "dist/host-haven-front-end",
             "index": "src/index.html",
             "browser": "src/main.ts",
@@ -91,5 +95,8 @@
         }
       }
     }
+  },
+  "cli": {
+    "analytics": "535e2350-1b0a-436d-b9e9-b2bf640f16d7"
   }
 }

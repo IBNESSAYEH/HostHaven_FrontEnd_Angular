@@ -1,0 +1,67 @@
+<div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-shadow duration-300 w-full h-full flex flex-col" >
+
+  <div class="relative flex-shrink-0">
+    <img
+      src="assets/images/pixlr-image-generator-26626d39-da3b-4fbe-a237-692a13810365.png"
+      [alt]="annonce.title"
+      class="w-full h-64 object-cover"
+    >
+    <div class="absolute top-4 right-4">
+      <span class="badge badge-primary">{{annonce.type.name}}</span>
+    </div>
+    <div class="absolute bottom-4 left-4 bg-white/90 px-4 py-2 rounded-full">
+      <span class="font-bold text-primary">${{annonce.monthPrice}}</span>
+      <span class="text-sm text-gray-600">/month</span>
+    </div>
+  </div>
+
+  <div class="p-6 flex flex-col flex-grow">
+    <div class="flex items-center justify-between mb-3">
+      <span class="text-sm text-gray-500 flex items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+        </svg>
+        {{annonce.city.name}}
+      </span>
+      <span class="badge badge-secondary">{{annonce.category.name}}</span>
+    </div>
+
+    <h3 class="text-xl font-semibold text-gray-800 mb-2">{{annonce.title}}</h3>
+    <p class="text-gray-600 text-sm mb-4 line-clamp-3">{{annonce.description}}</p>
+
+    <div class="flex flex-wrap gap-2 mb-4">
+      <span class="badge badge-outline">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+        </svg>
+        {{annonce.caracteristiques.numberRooms}} rooms
+      </span>
+      <span class="badge badge-outline">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+        </svg>
+        {{annonce.caracteristiques.surface}}m²
+      </span>
+      @if (annonce.caracteristiques.piscine) {
+        <span class="badge badge-accent">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+          </svg>
+          Pool
+        </span>
+      }
+    </div>
+
+    <div class="flex justify-between items-center mt-auto">
+      <div class="text-sm text-gray-500">${{annonce.dayPrice}}/day</div>
+      <div class="space-x-2">
+        <button class="btn btn-outline btn-sm" [routerLink]="['/annonces', annonce.id]">
+          View Details
+        </button>
+        <button class="btn btn-primary btn-sm">Book Now</button>
+      </div>
+    </div>
+  </div>
+</div>
