@@ -1,0 +1,285 @@
+<div class="min-h-screen bg-base-200 py-8">
+  <div class="container mx-auto px-4">
+    <div class="max-w-3xl mx-auto">
+      <h1 class="text-3xl font-bold mb-8">Create New Listing</h1>
+
+      @if (error) {
+        <div class="alert alert-error mb-4">
+          <span>{{ error }}</span>
+        </div>
+      }
+
+      <form [formGroup]="annonceForm" (ngSubmit)="onSubmit()" class="space-y-6">
+        <!-- Basic Information -->
+        <div class="card bg-base-100 shadow-xl">
+          <div class="card-body">
+            <h2 class="card-title">Basic Information</h2>
+
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text">Title</span>
+              </label>
+              <input type="text" formControlName="title"
+                     class="input input-bordered"
+                     [class.input-error]="isFieldInvalid('title')"
+                     placeholder="Enter listing title" />
+              @if (isFieldInvalid('title')) {
+                <label class="label">
+                  <span class="label-text-alt text-error">{{ getErrorMessage('title') }}</span>
+                </label>
+              }
+            </div>
+
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text">Description</span>
+              </label>
+              <textarea formControlName="description"
+                        class="textarea textarea-bordered h-24"
+                        [class.textarea-error]="isFieldInvalid('description')"
+                        placeholder="Describe your property"></textarea>
+              @if (isFieldInvalid('description')) {
+                <label class="label">
+                  <span class="label-text-alt text-error">{{ getErrorMessage('description') }}</span>
+                </label>
+              }
+            </div>
+          </div>
+        </div>
+
+        <!-- Pricing -->
+        <div class="card bg-base-100 shadow-xl">
+          <div class="card-body">
+            <h2 class="card-title">Pricing</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text">Monthly Price</span>
+                </label>
+                <input type="number" formControlName="monthPrice"
+                       class="input input-bordered"
+                       [class.input-error]="isFieldInvalid('monthPrice')"
+                       placeholder="0.00" />
+                @if (isFieldInvalid('monthPrice')) {
+                  <label class="label">
+                    <span class="label-text-alt text-error">{{ getErrorMessage('monthPrice') }}</span>
+                  </label>
+                }
+              </div>
+
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text">Weekly Price</span>
+                </label>
+                <input type="number" formControlName="weekPrice"
+                       class="input input-bordered"
+                       placeholder="0.00" />
+              </div>
+
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text">Daily Price</span>
+                </label>
+                <input type="number" formControlName="dayPrice"
+                       class="input input-bordered"
+                       placeholder="0.00" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Property Details -->
+        <div class="card bg-base-100 shadow-xl">
+          <div class="card-body">
+            <h2 class="card-title">Property Details</h2>
+
+            <div formGroupName="caracteristiques" class="space-y-4">
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="form-control">
+                  <label class="label">
+                    <span class="label-text">Surface (m²)</span>
+                  </label>
+                  <input type="number" formControlName="surface"
+                         class="input input-bordered"
+                         [class.input-error]="isFieldInvalid('caracteristiques.surface')" />
+                  @if (isFieldInvalid('caracteristiques.surface')) {
+                    <label class="label">
+                      <span class="label-text-alt text-error">{{ getErrorMessage('caracteristiques.surface') }}</span>
+                    </label>
+                  }
+                </div>
+
+                <div class="form-control">
+                  <label class="label">
+                    <span class="label-text">Number of Rooms</span>
+                  </label>
+                  <input type="number" formControlName="numberRooms"
+                         class="input input-bordered"
+                         [class.input-error]="isFieldInvalid('caracteristiques.numberRooms')" />
+                  @if (isFieldInvalid('caracteristiques.numberRooms')) {
+                    <label class="label">
+                      <span class="label-text-alt text-error">{{ getErrorMessage('caracteristiques.numberRooms') }}</span>
+                    </label>
+                  }
+                </div>
+
+                <div class="form-control">
+                  <label class="label">
+                    <span class="label-text">Floor</span>
+                  </label>
+                  <input type="number" formControlName="etage"
+                         class="input input-bordered" />
+                </div>
+              </div>
+
+              <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="form-control">
+                  <label class="label cursor-pointer">
+                    <span class="label-text">Elevator</span>
+                    <input type="checkbox" formControlName="assenceur"
+                           class="checkbox" />
+                  </label>
+                </div>
+
+                <div class="form-control">
+                  <label class="label cursor-pointer">
+                    <span class="label-text">Balcony</span>
+                    <input type="checkbox" formControlName="balcon"
+                           class="checkbox" />
+                  </label>
+                </div>
+
+                <div class="form-control">
+                  <label class="label cursor-pointer">
+                    <span class="label-text">Terrace</span>
+                    <input type="checkbox" formControlName="terrasse"
+                           class="checkbox" />
+                  </label>
+                </div>
+
+                <div class="form-control">
+                  <label class="label cursor-pointer">
+                    <span class="label-text">Parking</span>
+                    <input type="checkbox" formControlName="parking"
+                           class="checkbox" />
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Location and Contact -->
+        <div class="card bg-base-100 shadow-xl">
+          <div class="card-body">
+            <h2 class="card-title">Location and Contact</h2>
+
+        <!-- Inside the Location and Contact card, add this alongside City and Type -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+  <div class="form-control">
+    <label class="label">
+      <span class="label-text">City</span>
+    </label>
+    <select formControlName="cityId" class="select select-bordered">
+      <option value="">Select a city</option>
+      @for (city of cities; track city.id) {
+        <option [value]="city.id">{{city.name}}</option>
+      }
+    </select>
+  </div>
+
+  <div class="form-control">
+    <label class="label">
+      <span class="label-text">Type</span>
+    </label>
+    <select formControlName="typeId" class="select select-bordered">
+      <option value="">Select type</option>
+      @for (type of types; track type.id) {
+        <option [value]="type.id">{{type.name}}</option>
+      }
+    </select>
+  </div>
+
+  <div class="form-control">
+    <label class="label">
+      <span class="label-text">Category</span>
+    </label>
+    <select formControlName="categoryId" class="select select-bordered">
+      <option value="">Select category</option>
+      @for (category of categories; track category.id) {
+        <option [value]="category.id">{{category.name}}</option>
+      }
+    </select>
+  </div>
+</div>
+
+
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text">Address</span>
+              </label>
+              <input type="text" formControlName="adress"
+                     class="input input-bordered"
+                     [class.input-error]="isFieldInvalid('adress')"
+                     placeholder="Enter full address" />
+              @if (isFieldInvalid('adress')) {
+                <label class="label">
+                  <span class="label-text-alt text-error">{{ getErrorMessage('adress') }}</span>
+                </label>
+              }
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text">Phone</span>
+                </label>
+                <input type="tel" formControlName="phone"
+                       class="input input-bordered"
+                       [class.input-error]="isFieldInvalid('phone')"
+                       placeholder="Enter phone number" />
+                @if (isFieldInvalid('phone')) {
+                  <label class="label">
+                    <span class="label-text-alt text-error">{{ getErrorMessage('phone') }}</span>
+                  </label>
+                }
+              </div>
+
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text">Email</span>
+                </label>
+                <input type="email" formControlName="email"
+                       class="input input-bordered"
+                       [class.input-error]="isFieldInvalid('email')"
+                       placeholder="Enter email" />
+                @if (isFieldInvalid('email')) {
+                  <label class="label">
+                    <span class="label-text-alt text-error">{{ getErrorMessage('email') }}</span>
+                  </label>
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card bg-base-100 shadow-xl">
+          <div class="card-body">
+            <div class="card-actions justify-end">
+              <button type="button" class="btn" routerLink="/home">Cancel</button>
+              <button type="submit"
+                      class="btn btn-primary"
+                      [disabled]="!annonceForm.valid || isLoading">
+                @if (isLoading) {
+                  <span class="loading loading-spinner"></span>
+                }
+                Create Listing
+              </button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

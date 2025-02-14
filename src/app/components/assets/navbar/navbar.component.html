@@ -1,0 +1,65 @@
+
+    <div class="navbar bg-base-100 shadow-lg">
+      <div class="container mx-auto">
+        <!-- Logo -->
+        <div class="flex-1">
+          <a routerLink="/" class="text-xl font-bold text-primary">HostHaven</a>
+        </div>
+
+        <!-- Desktop Menu -->
+        <div class="flex-none hidden lg:flex">
+          <ul class="menu menu-horizontal px-1 space-x-2">
+            <li>
+              <a routerLink="/home" routerLinkActive="active" class="hover:text-primary">Home</a>
+            </li>
+            <li>
+              <a routerLink="/search" routerLinkActive="active" class="hover:text-primary">Search</a>
+            </li>
+            @if (authService.isAuthenticated()) {
+              <li>
+                <a routerLink="/create-annonce" routerLinkActive="active" class="hover:text-primary">List Property</a>
+              </li>
+              <li>
+                <a routerLink="/dashboard" routerLinkActive="active" class="hover:text-primary">Dashboard</a>
+              </li>
+              <li>
+                <button (click)="authService.logout()" class="btn btn-ghost hover:text-error">
+                  Logout
+                </button>
+              </li>
+            } @else {
+              <li>
+                <a routerLink="/auth/login" class="btn btn-primary">Login</a>
+              </li>
+              <li>
+                <a routerLink="/auth/register" class="btn btn-ghost hover:text-primary">Register</a>
+              </li>
+            }
+          </ul>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div class="flex-none lg:hidden">
+          <div class="dropdown dropdown-end">
+            <label tabindex="0" class="btn btn-ghost">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </label>
+            <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
+              <li><a routerLink="/home">Home</a></li>
+              <li><a routerLink="/search">Search</a></li>
+              @if (authService.isAuthenticated()) {
+                <li><a routerLink="/create-annonce">List Property</a></li>
+                <li><a routerLink="/dashboard">Dashboard</a></li>
+                <li><button (click)="authService.logout()">Logout</button></li>
+              } @else {
+                <li><a routerLink="/auth/login">Login</a></li>
+                <li><a routerLink="/auth/register">Register</a></li>
+              }
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
