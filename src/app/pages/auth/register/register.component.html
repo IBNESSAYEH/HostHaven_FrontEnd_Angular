@@ -33,7 +33,7 @@
                   </div>
                   <div class="mt-8 mb-4">
                     <p class="text-white">Already have an account?<br>
-                      <a class="underline hover:no-underline" routerLink="/login">Sign in!</a>
+                      <a class="underline hover:no-underline" routerLink="/auth/login">Sign in!</a>
                     </p>
                   </div>
                 </div>
@@ -100,7 +100,7 @@
                         <label class="label">
                           <span class="label-text">Password</span>
                         </label>
-                        <input type="password" formControlName="password"
+                        <input type="password" formControlName="password" placeholder="enter password"
                                class="input input-bordered input-sm w-full" />
                         @if (registerForm.get('password')?.touched && registerForm.get('password')?.errors) {
                           <span class="text-error text-xs mt-1">Password must be at least 6 characters</span>

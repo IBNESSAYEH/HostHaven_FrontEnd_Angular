@@ -7,6 +7,8 @@ import { AuthGuard } from "./guards/auth.guard";
 import { AnnonceListComponent } from "./components/annonces/annonce-list/annonce-list.component";
 import { AnnonceDetailComponent } from "./components/annonces/annonce-detail/annonce-detail.component";
 import { CreateAnnonceComponent } from "./components/annonces/create-annonce/create-annonce.component";
+import { HomeComponent } from "./components/home/home.component";
+import { UpdateAnnonceComponent } from "./components/annonces/update-annonce/update-annonce.component";
 
 export const routes: Routes = [
 
@@ -23,23 +25,28 @@ export const routes: Routes = [
     canActivate: [() => inject(AuthGuard).canActivate()]
   },
   {
-    path: 'home',
-    component: AnnonceListComponent,
+    path: '',
+    component: HomeComponent,
 
   },
   {
-    path: 'create-annonce',
+    path: 'annonces/create',
     component: CreateAnnonceComponent,
+    canActivate: [() => inject(AuthGuard).canActivate()]
+  },
+  {
+    path: 'annonces/edit/:id',
+    component: UpdateAnnonceComponent,
+    canActivate: [() => inject(AuthGuard).canActivate()]
+  },
+  {
+    path: 'annonce-list',
+    component: AnnonceListComponent,
     canActivate: [() => inject(AuthGuard).canActivate()]
   },
   {
     path: 'annonces/:id',
     component: AnnonceDetailComponent,
-  },
-  {
-    path: '',
-    redirectTo: '/auth/login',
-    pathMatch: 'full'
   },
   {
     path: '**',

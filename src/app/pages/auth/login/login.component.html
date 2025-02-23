@@ -33,7 +33,7 @@
                   </div>
                   <div class="mt-8 mb-4">
                     <p class="text-white">Don't have an account?<br>
-                      <a class="underline hover:no-underline" routerLink="/register">Get started!</a>
+                      <a class="underline hover:no-underline" routerLink="/auth/register">Get started!</a>
                     </p>
                   </div>
                 </div>
@@ -50,7 +50,7 @@
                         <label class="label">
                           <span class="label-text">Email address</span>
                         </label>
-                        <input type="email" formControlName="email"
+                        <input type="email" formControlName="email" placeholder="enter your email"
                                class="input input-bordered input-sm w-full max-w-xs mx-auto" />
                         @if (loginForm.get('email')?.touched && loginForm.get('email')?.hasError('required')) {
                           <span class="text-error text-xs mt-1">Email is required</span>
@@ -61,7 +61,7 @@
                         <label class="label">
                           <span class="label-text">Password</span>
                         </label>
-                        <input type="password" formControlName="password"
+                        <input type="password" formControlName="password" placeholder="enter your password"
                                class="input input-bordered input-sm w-full max-w-xs mx-auto" />
                         @if (loginForm.get('password')?.touched && loginForm.get('password')?.hasError('required')) {
                           <span class="text-error text-xs mt-1">Password is required</span>
