@@ -30,6 +30,7 @@ export class AnnonceListComponent implements OnInit {
   types: Type[] = [];
   error: string | null = null;
 
+
   filters: AnnonceFilters = {
     searchTerm: '',
     city: '',
@@ -46,11 +47,10 @@ export class AnnonceListComponent implements OnInit {
   constructor(
     private annonceService: AnnonceService,
     public authService: AuthService
-  ) {}
+  ) {  }
 
   ngOnInit() {
     this.loadAnnonces();
-
   }
 
   loadAnnonces() {
@@ -63,6 +63,7 @@ export class AnnonceListComponent implements OnInit {
           this.annonces = data;
           this.filteredAnnonces = data;
           this.extractFilters();
+          console.log(data)
           // data ? console.log(data) : console.log("no data")
         } else {
           this.annonces = [];

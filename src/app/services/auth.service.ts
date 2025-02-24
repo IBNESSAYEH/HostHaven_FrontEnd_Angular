@@ -31,6 +31,26 @@ export class AuthService {
     }
   }
 
+  getCurrentUser(): any {
+    const token = this.getToken();
+    if (!token) return null;
+
+    try {
+      const decodedToken = this.decodeToken(token);
+      return {
+        firstName: decodedToken.firstName || '',
+        lastName: decodedToken.lastNAme || '',
+        email: decodedToken.email || '',
+        phone: decodedToken.phone || '',
+        role: decodedToken.role || '',
+        userId: decodedToken.userId || ''
+      };
+    } catch (error) {
+      console.error('Error getting current user:', error);
+      return null;
+    }
+  }
+
   register(userData: any): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/register`, userData)
       .pipe(
@@ -94,5 +114,20 @@ export class AuthService {
   getCurrentUserEmail(): string | null {
     const decodedToken = this.userSubject.getValue();
     return decodedToken?.email || null;
+  }
+
+  getUserId(): string | null {
+    const token = this.getToken();
+    if (!token) return null;
+
+    try {
+      const decodedToken = this.decodeToken(token.trim());
+      if (!decodedToken) return null;
+
+      return decodedToken.userId || null;
+    } catch (error) {
+      console.error('Error getting user ID from token:', error);
+      return null;
+    }
   }
 }

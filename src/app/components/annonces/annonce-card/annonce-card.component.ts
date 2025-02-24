@@ -1,6 +1,9 @@
+
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
+import { AnnonceService } from '../../../services/annonce.service';
+import { AuthService } from '../../../services/auth.service';
 import { Annonce } from '../../../models/annonce';
 
 @Component({
@@ -13,4 +16,15 @@ import { Annonce } from '../../../models/annonce';
 
 export class AnnonceCardComponent {
   @Input() annonce!: Annonce;
+
+
+  constructor(
+
+    private route: ActivatedRoute,
+    private annonceService: AnnonceService,
+    public authService: AuthService
+  ) {
+   
+
+  }
 }

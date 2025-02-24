@@ -30,7 +30,6 @@ export class AnnonceService {
   }
 
   create(annonceData: any): Observable<any> {
-    // Ensure caracteristiques object exists and has all required fields
     if (!annonceData.caracteristiques) {
       annonceData.caracteristiques = {};
     }
@@ -120,5 +119,9 @@ export class AnnonceService {
 
   delete(id: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/annonces/${id}`, this.getAuthHeaders());
+  }
+
+  getByUserId(userId: string): Observable<Annonce[]> {
+    return this.http.get<Annonce[]>(`${this.apiUrl}/annonces/user/${userId}`);
   }
 }

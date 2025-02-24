@@ -1,4 +1,16 @@
 
-<app-navbar></app-navbar>
-<router-outlet></router-outlet>
-<app-footer></app-footer>
+  @if (!isAuthPage) {
+    <app-navbar />
+    <!-- <div class="flex"> -->
+      <!-- <app-sidebar /> -->
+      <!-- <main class="flex-1 ml-64 p-6 bg-gray-50"> -->
+        <!-- <div class="max-w-7xl mx-auto mt-14"> -->
+          <router-outlet />
+        <!-- </div> -->
+      <!-- </main> -->
+    <!-- </div> -->
+    <app-footer></app-footer>
+  } @else {
+    <router-outlet />
+  }
+
