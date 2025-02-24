@@ -1,4 +1,3 @@
-<!-- src/app/features/annonces/annonce-detail/annonce-detail.component.html -->
 <div class="min-h-screen bg-base-200">
   @if (isLoading) {
     <div class="flex justify-center items-center min-h-[400px]">
@@ -10,14 +9,21 @@
     </div>
   } @else if (annonce) {
     <!-- Property Header -->
-    <div class="bg-base-100 shadow-lg py-6">
+    <div class="bg-gradient-to-r from-primary/20 to-primary/10 py-8">
       <div class="container mx-auto px-4">
-        <div class="flex justify-between items-start">
+        <div class="flex flex-col md:flex-row justify-between items-start gap-6">
           <div>
-            <h1 class="text-3xl font-bold mb-2">{{annonce.title}}</h1>
-            <div class="flex items-center gap-4">
+            <div class="flex items-center gap-3 text-sm mb-3">
+              <a routerLink="/" class="text-gray-600 hover:text-primary">Home</a>
+              <span class="text-gray-400">/</span>
+              <a routerLink="/annonce-list" class="text-gray-600 hover:text-primary">Properties</a>
+              <span class="text-gray-400">/</span>
+              <span class="text-primary">Details</span>
+            </div>
+            <h1 class="text-4xl font-bold mb-3">{{annonce.title}}</h1>
+            <div class="flex flex-wrap items-center gap-4">
               <span class="flex items-center text-gray-600">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1 text-primary" viewBox="0 0 20 20" fill="currentColor">
                   <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
                 </svg>
                 {{annonce.city.name}}
@@ -26,96 +32,277 @@
               <span class="badge badge-secondary">{{annonce.category.name}}</span>
             </div>
           </div>
-          <div class="text-right">
-            <div class="text-3xl font-bold text-primary">${{annonce.monthPrice}}</div>
+          <div class="flex flex-col items-end">
+            <div class="text-4xl font-bold text-primary">${{annonce.monthPrice}}</div>
             <div class="text-gray-600">per month</div>
+            <div class="flex gap-2 mt-3">
+              <div class="text-sm text-gray-500">${{annonce.weekPrice}}/week</div>
+              <span class="text-gray-300">•</span>
+              <div class="text-sm text-gray-500">${{annonce.dayPrice}}/day</div>
+            </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Image Gallery -->
     <div class="container mx-auto px-4 py-8">
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <!-- Main Image -->
-        <div class="aspect-w-16 aspect-h-9 rounded-lg overflow-hidden">
-          <img
-            src="assets/images/pixlr-image-generator-1ebfe583-0068-4415-9b35-5330d6ac9f10.png"
-            [alt]="annonce.title"
-            class="object-cover w-full h-full"
-          >
-        </div>
-
-        <!-- Property Details -->
-        <div class="space-y-6">
-          <div class="prose max-w-none">
-            <h3 class="text-xl font-semibold">Description</h3>
-            <p>{{annonce.description}}</p>
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Left Column: Image and Details -->
+        <div class="lg:col-span-2 space-y-8">
+          <!-- Main Image with Gallery -->
+          <div class="card bg-base-100">
+            <div class="card-body p-0">
+              <div class="aspect-w-16 aspect-h-9 rounded-t-xl overflow-hidden">
+                <img
+                  src="assets/images/pixlr-image-generator-1ebfe583-0068-4415-9b35-5330d6ac9f10.png"
+                  [alt]="annonce.title"
+                  class="object-cover w-full h-full"
+                >
+              </div>
+              <!-- Image Gallery Thumbnails -->
+              <div class="p-4 flex gap-2 overflow-x-auto">
+                @for (i of [1,2,3,4]; track i) {
+                  <div class="flex-shrink-0 w-24 h-24 rounded-lg overflow-hidden cursor-pointer hover:ring-2 hover:ring-primary">
+                    <img
+                      src="assets/images/pixlr-image-generator-1ebfe583-0068-4415-9b35-5330d6ac9f10.png"
+                      alt="gallery"
+                      class="w-full h-full object-cover"
+                    >
+                  </div>
+                }
+              </div>
+            </div>
           </div>
 
-          <!-- Features Grid -->
-          <div class="grid grid-cols-2 gap-4">
-            <div class="card bg-base-100 shadow-sm">
-              <div class="card-body p-4">
-                <div class="flex items-center gap-2">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary" viewBox="0 0 20 20" fill="currentColor">
-                    <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
-                  </svg>
-                  <span>{{annonce.caracteristiques.numberRooms}} Rooms</span>
-                </div>
-              </div>
+          <!-- Description Section -->
+          <div class="card bg-base-100">
+            <div class="card-body">
+              <h3 class="text-2xl font-bold mb-4">Description</h3>
+              <p class="text-gray-600 leading-relaxed">{{annonce.description}}</p>
             </div>
+          </div>
 
-            <div class="card bg-base-100 shadow-sm">
-              <div class="card-body p-4">
-                <div class="flex items-center gap-2">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd" />
-                  </svg>
-                  <span>{{annonce.caracteristiques.surface}}m²</span>
-                </div>
-              </div>
-            </div>
-
-            @if (annonce.caracteristiques.parking) {
-              <div class="card bg-base-100 shadow-sm">
-                <div class="card-body p-4">
-                  <div class="flex items-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary" viewBox="0 0 20 20" fill="currentColor">
-                      <path fill-rule="evenodd" d="M10 2a4 4 0 00-4 4v1H5a1 1 0 00-.994.89l-1 9A1 1 0 004 18h12a1 1 0 00.994-1.11l-1-9A1 1 0 0015 7h-1V6a4 4 0 00-4-4zm2 5V6a2 2 0 10-4 0v1h4zm-6 3a1 1 0 112 0 1 1 0 01-2 0zm7-1a1 1 0 100 2 1 1 0 000-2z" clip-rule="evenodd" />
+          <!-- Features Section -->
+          <div class="card bg-base-100">
+            <div class="card-body">
+              <h3 class="text-2xl font-bold mb-6">Property Features</h3>
+              <div class="grid grid-cols-2 md:grid-cols-3 gap-6">
+                <div class="flex items-center gap-3">
+                  <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary" viewBox="0 0 20 20" fill="currentColor">
+                      <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
                     </svg>
-                    <span>Parking Available</span>
+                  </div>
+                  <div>
+                    <div class="text-sm text-gray-500">Rooms</div>
+                    <div class="font-semibold">{{annonce.caracteristiques.numberRooms}}</div>
                   </div>
                 </div>
-              </div>
-            }
-          </div>
 
-          <!-- Contact Information -->
-          <div class="card bg-base-100 shadow-lg">
-            <div class="card-body">
-              <h3 class="card-title">Contact Host</h3>
-              <div class="space-y-2">
-                <p class="flex items-center gap-2">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary" viewBox="0 0 20 20" fill="currentColor">
-                    <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
-                    <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
-                  </svg>
-                  {{annonce.email}}
-                </p>
-                <p class="flex items-center gap-2">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary" viewBox="0 0 20 20" fill="currentColor">
-                    <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
-                  </svg>
-                  {{annonce.phone}}
-                </p>
-              </div>
-              <div class="card-actions justify-end mt-4">
-                <button class="btn btn-primary">Contact Host</button>
+                <div class="flex items-center gap-3">
+                  <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+                    </svg>
+                  </div>
+                  <div>
+                    <div class="text-sm text-gray-500">Surface</div>
+                    <div class="font-semibold">{{annonce.caracteristiques.surface}}m²</div>
+                  </div>
+                </div>
+
+                <div class="flex items-center gap-3">
+                  <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                    </svg>
+                  </div>
+                  <div>
+                    <div class="text-sm text-gray-500">Floor</div>
+                    <div class="font-semibold">{{annonce.caracteristiques.etage}}</div>
+                  </div>
+                </div>
+
+                @if (annonce.caracteristiques.assenceur) {
+                  <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 11l7-7 7 7M5 19l7-7 7 7" />
+                      </svg>
+                    </div>
+                    <div>
+                      <div class="text-sm text-gray-500">Elevator</div>
+                      <div class="font-semibold">Available</div>
+                    </div>
+                  </div>
+                }
+
+                @if (annonce.caracteristiques.parking) {
+                  <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <div class="text-sm text-gray-500">Parking</div>
+                      <div class="font-semibold">Available</div>
+                    </div>
+                  </div>
+                }
+
+                @if (annonce.caracteristiques.balcon) {
+                  <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                      </svg>
+                    </div>
+                    <div>
+                      <div class="text-sm text-gray-500">Balcony</div>
+                      <div class="font-semibold">Yes</div>
+                    </div>
+                  </div>
+                }
               </div>
             </div>
           </div>
         </div>
+
+      <!-- Right Column -->
+<div class="lg:col-span-1 space-y-6">
+  <!-- Price Card -->
+  <div class="card bg-base-100 shadow-sm">
+    <div class="card-body">
+      <div class="text-center py-4">
+        <div class="text-4xl font-bold text-primary">${{annonce.monthPrice}}</div>
+        <div class="text-gray-500 mt-1">per month</div>
+      </div>
+      <div class="divider my-2"></div>
+      <div class="space-y-3">
+        <div class="flex justify-between items-center">
+          <span class="text-gray-600">Weekly Price</span>
+          <span class="font-semibold">${{annonce.weekPrice}}</span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-gray-600">Daily Price</span>
+          <span class="font-semibold">${{annonce.dayPrice}}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contact Host Card -->
+  <div class="card bg-base-100 shadow-sm">
+    <div class="card-body">
+      <h3 class="card-title text-xl mb-6">Contact Host</h3>
+
+      <!-- Host Info -->
+      <div class="flex items-center gap-4 mb-6">
+        <div class="avatar">
+          <div class="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-xl">
+            {{ annonce.user?.firstName?.[0] }}{{ annonce.user?.lastName?.[0] }}
+          </div>
+        </div>
+        <div>
+          <div class="font-semibold text-lg">{{ annonce.user?.firstName }} {{ annonce.user?.lastName }}</div>
+          <div class="text-gray-500">Property Owner</div>
+        </div>
+      </div>
+
+      <!-- Contact Info -->
+      <div class="space-y-3 mb-6">
+        <a href="mailto:{{annonce.email}}" class="flex items-center gap-3 p-3 rounded-lg hover:bg-base-200 transition-colors">
+          <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary" viewBox="0 0 20 20" fill="currentColor">
+              <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
+              <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+            </svg>
+          </div>
+          <div>
+            <div class="text-sm text-gray-500">Email</div>
+            <div>{{annonce.email}}</div>
+          </div>
+        </a>
+
+        <a href="tel:{{annonce.phone}}" class="flex items-center gap-3 p-3 rounded-lg hover:bg-base-200 transition-colors">
+          <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary" viewBox="0 0 20 20" fill="currentColor">
+              <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
+            </svg>
+          </div>
+          <div>
+            <div class="text-sm text-gray-500">Phone</div>
+            <div>{{annonce.phone}}</div>
+          </div>
+        </a>
+      </div>
+
+      <!-- Contact Form -->
+      <form class="space-y-4">
+        <div class="form-control">
+          <input type="text" [(ngModel)]="contactForm.name" name="name" placeholder="Your Name" class="input input-bordered w-full" />
+        </div>
+        <div class="form-control">
+          <input type="email" [(ngModel)]="contactForm.email" name="email" placeholder="Your Email" class="input input-bordered w-full" />
+        </div>
+        <div class="form-control">
+          <textarea [(ngModel)]="contactForm.message" name="message" class="textarea textarea-bordered min-h-[120px]" placeholder="Your Message"></textarea>
+        </div>
+        <button (click)="onContactSubmit()" class="btn btn-primary w-full">Send Message</button>
+      </form>
+
+      <!-- Quick Actions -->
+      <div class="grid grid-cols-2 gap-3 mt-6">
+        <button (click)="onCall()" class="btn btn-outline gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+          </svg>
+          Call Now
+        </button>
+        <button (click)="onShare()" class="btn btn-outline gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+          </svg>
+          Share
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Safety Tips -->
+  <div class="card bg-base-100 shadow-sm">
+    <div class="card-body">
+      <h3 class="card-title text-xl mb-4">Safety Tips</h3>
+      <ul class="space-y-4">
+        <li class="flex items-start gap-3">
+          <div class="w-8 h-8 rounded-full bg-success/10 flex items-center justify-center flex-shrink-0">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-success" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+            </svg>
+          </div>
+          <span class="text-gray-600">Always meet in a public place for property viewing</span>
+        </li>
+        <li class="flex items-start gap-3">
+          <div class="w-8 h-8 rounded-full bg-warning/10 flex items-center justify-center flex-shrink-0">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-warning" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+            </svg>
+          </div>
+          <span class="text-gray-600">Never transfer money before viewing the property</span>
+        </li>
+        <li class="flex items-start gap-3">
+          <div class="w-8 h-8 rounded-full bg-error/10 flex items-center justify-center flex-shrink-0">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-error" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M10 1.944A11.954 11.954 0 012.166 5C2.056 5.649 2 6.319 2 7c0 5.225 3.34 9.67 8 11.317C14.66 16.67 18 12.225 18 7c0-.682-.057-1.35-.166-2.001A11.954 11.954 0 0110 1.944zM11 14a1 1 0 11-2 0 1 1 0 012 0zm0-7a1 1 0 10-2 0v3a1 1 0 102 0V7z" clip-rule="evenodd" />
+            </svg>
+          </div>
+          <span class="text-gray-600">Report any suspicious behavior immediately</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
       </div>
     </div>
   }

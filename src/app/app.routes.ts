@@ -9,6 +9,8 @@ import { AnnonceDetailComponent } from "./components/annonces/annonce-detail/ann
 import { CreateAnnonceComponent } from "./components/annonces/create-annonce/create-annonce.component";
 import { HomeComponent } from "./components/home/home.component";
 import { UpdateAnnonceComponent } from "./components/annonces/update-annonce/update-annonce.component";
+import { ProfileComponent } from "./components/user-profile/profile/profile.component";
+import { HostDashboardComponent } from "./components/dashboards/host-dashboard/host-dashboard.component";
 
 export const routes: Routes = [
 
@@ -18,6 +20,11 @@ export const routes: Routes = [
       { path: 'login', component: LoginComponent },
       { path: 'register', component: RegisterComponent }
     ]
+  },
+  {
+    path: 'profile',
+    component: ProfileComponent,
+    canActivate: [() => inject(AuthGuard).canActivate()]
   },
   {
     path: 'ebanky-news',
@@ -47,6 +54,10 @@ export const routes: Routes = [
   {
     path: 'annonces/:id',
     component: AnnonceDetailComponent,
+  },{
+    path: 'dashboard/host',
+    component: HostDashboardComponent,
+    canActivate: [() => inject(AuthGuard).canActivate()]
   },
   {
     path: '**',

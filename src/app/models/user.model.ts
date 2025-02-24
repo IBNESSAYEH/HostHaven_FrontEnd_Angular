@@ -10,7 +10,7 @@ export interface User {
   emailVerificationStatus: boolean;
 }
 
-// auth.model.ts
+
 export interface LoginRequest {
   email: string;
   password: string;

@@ -1,14 +1,135 @@
 
+<div class="relative">
+  <!-- Hero Background -->
+  <div class="hero min-h-[600px]" style="background-image: url('../assets/images/hero-bg.jpg');">
+    <div class="hero-overlay bg-gradient-to-r from-blue-800/90 to, to-blue-800/80"></div>
+    <div class="hero-content text-white py-16">
+      <div class="max-w-4xl mx-auto text-center">
+        <!-- Main Content -->
+        <div class="mb-12">
+          <h1 class="text-5xl font-bold mb-4 leading-tight">
+            Find Your Dream Space with HostHaven
+          </h1>
+          <p class="text-xl mb-8 text-gray-200">
+            Discover perfect properties for every occasion - from cozy apartments to luxury villas
+          </p>
+        </div>
 
-<div class="hero min-h-72" style="background: url('../assets/image/pixlr-image-generator-1ebfe583-0068-4415-9b35-5330d6ac9f10.png');">
-  <div class="hero-overlay bg-opacity-60"></div>
-  <div class="hero-content text-neutral-content text-center">
-    <div class="max-w-md">
-      <h1 class="text-4xl font-bold">Find Your Perfect Stay</h1>
-      <p class="mb-5">
-        Browse through our selection of beautiful properties
-      </p>
-      <button class="btn btn-primary">Get Started</button>
+        <!-- Search Section -->
+        <div class="bg-white/10 backdrop-blur-md rounded-xl p-6 shadow-2xl">
+          <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
+            <!-- Location -->
+            <div class="md:col-span-4">
+              <select class="select select-bordered w-full bg-white/80 text-gray-800">
+                <option value="" disabled selected>Location</option>
+                @for (city of cities; track city.id) {
+                  <option [value]="city.id">{{city.name}}</option>
+                }
+              </select>
+            </div>
+
+            <!-- Property Type -->
+            <div class="md:col-span-3">
+              <select class="select select-bordered w-full bg-white/80 text-gray-800">
+                <option value="" disabled selected>Property Type</option>
+                @for (type of types; track type.id) {
+                  <option [value]="type.id">{{type.name}}</option>
+                }
+              </select>
+            </div>
+
+            <!-- Price Range -->
+            <div class="md:col-span-3">
+              <select class="select select-bordered w-full bg-white/80 text-gray-800">
+                <option value="" disabled selected>Price Range</option>
+                <option value="0-500">Under $500</option>
+                <option value="500-1000">$500 - $1,000</option>
+                <option value="1000-2000">$1,000 - $2,000</option>
+                <option value="2000+">$2,000+</option>
+              </select>
+            </div>
+
+            <!-- Search Button -->
+            <div class="md:col-span-2">
+              <button class="btn btn-primary w-full">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+                Search
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stats Section -->
+        <div class="grid grid-cols-3 gap-8 mt-12">
+          <div class="text-center">
+            <div class="text-4xl font-bold mb-2">500+</div>
+            <div class="text-gray-200">Properties Listed</div>
+          </div>
+          <div class="text-center">
+            <div class="text-4xl font-bold mb-2">1000+</div>
+            <div class="text-gray-200">Happy Customers</div>
+          </div>
+          <div class="text-center">
+            <div class="text-4xl font-bold mb-2">50+</div>
+            <div class="text-gray-200">Cities Covered</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Features Section -->
+  <div class="container mx-auto px-4 py-8">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 -mt-20">
+      <div class="card bg-base-100 shadow-xl">
+        <div class="card-body">
+          <div class="flex items-center gap-4">
+            <div class="rounded-full bg-primary/10 p-3">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+              </svg>
+            </div>
+            <div>
+              <h3 class="font-bold text-lg">Verified Properties</h3>
+              <p class="text-gray-600">All properties are verified and inspected</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card bg-base-100 shadow-xl">
+        <div class="card-body">
+          <div class="flex items-center gap-4">
+            <div class="rounded-full bg-primary/10 p-3">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <div>
+              <h3 class="font-bold text-lg">24/7 Support</h3>
+              <p class="text-gray-600">Round-the-clock customer support</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card bg-base-100 shadow-xl">
+        <div class="card-body">
+          <div class="flex items-center gap-4">
+            <div class="rounded-full bg-primary/10 p-3">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </div>
+            <div>
+              <h3 class="font-bold text-lg">Secure Payments</h3>
+              <p class="text-gray-600">Safe and secure payment methods</p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>

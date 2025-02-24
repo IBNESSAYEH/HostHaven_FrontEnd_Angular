@@ -18,13 +18,13 @@ export class AnnonceCardComponent {
   @Input() annonce!: Annonce;
 
 
-
   constructor(
 
     private route: ActivatedRoute,
     private annonceService: AnnonceService,
     public authService: AuthService
   ) {
-    
+   
+
   }
 }

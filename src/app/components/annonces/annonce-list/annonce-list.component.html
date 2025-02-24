@@ -1,36 +1,6 @@
 
-
-<!-- Filters Section -->
 <div class="container mx-auto p-4">
-  <div class="flex flex-wrap gap-4 mb-6">
-    <select class="select select-bordered w-full max-w-xs"
-    [(ngModel)]="filters.city"
-    (change)="filter()">
-<option value="">All Cities</option>
-@for (city of cities; track city.id) {
-<option [value]="city.id">{{city.name}}</option>
-}
-</select>
 
-<select class="select select-bordered w-full max-w-xs"
-    [(ngModel)]="filters.type"
-    (change)="filter()">
-<option value="">All Types</option>
-@for (type of types; track type.id) {
-<option [value]="type.id">{{type.name}}</option>
-}
-</select>
-
-    <select class="select select-bordered w-full max-w-xs"
-            [(ngModel)]="filters.priceRange" (change)="filter()">
-      <option value="">Any Price</option>
-      <option value="0-1000">$0 - $1,000</option>
-      <option value="1000-2000">$1,000 - $2,000</option>
-      <option value="2000+">$2,000+</option>
-    </select>
-  </div>
-
- <!-- Properties Grid -->
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6">
   @if (isLoading) {
     <div class="col-span-full">
@@ -50,7 +20,6 @@
   }
 </div>
 
-  <!-- Pagination -->
   <app-pagination
     [currentPage]="currentPage"
     [totalPages]="totalPages"

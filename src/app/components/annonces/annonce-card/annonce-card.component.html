@@ -61,7 +61,8 @@
           View Details
         </button>
         <button class="btn btn-primary btn-sm">Book Now</button>
-        @if (annonce.user.id == authService.userSubject.value.id) {
+        @if (annonce.user.id == authService.getUserId()) {
+
           <button
             class="btn btn-outline btn-warning btn-sm"
             [routerLink]="['/annonces/edit', annonce.id]">
