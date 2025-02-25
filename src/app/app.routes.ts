@@ -11,6 +11,8 @@ import { HomeComponent } from "./components/home/home.component";
 import { UpdateAnnonceComponent } from "./components/annonces/update-annonce/update-annonce.component";
 import { ProfileComponent } from "./components/user-profile/profile/profile.component";
 import { HostDashboardComponent } from "./components/dashboards/host-dashboard/host-dashboard.component";
+import { AdminDashboardComponent } from "./components/dashboards/admin-dashboard/admin-dashboard.component";
+import { AdminGuard } from "./guards/admin-guard.guard";
 
 export const routes: Routes = [
 
@@ -58,6 +60,10 @@ export const routes: Routes = [
     path: 'dashboard/host',
     component: HostDashboardComponent,
     canActivate: [() => inject(AuthGuard).canActivate()]
+  },{
+    path: 'admin',
+    component: AdminDashboardComponent,
+    canActivate: [AdminGuard]
   },
   {
     path: '**',
