@@ -221,8 +221,7 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   togglePropertyStatus(property: Annonce): void {
-    const newStatus = !property.status;
-    const statusText = newStatus ? 'activate' : 'deactivate';
+    const statusText = !property.status ? 'activate' : 'deactivate';
 
     Swal.fire({
       title: `${statusText.charAt(0).toUpperCase() + statusText.slice(1)} property?`,
@@ -234,12 +233,7 @@ export class AdminDashboardComponent implements OnInit {
       confirmButtonText: `Yes, ${statusText} it!`
     }).then((result) => {
       if (result.isConfirmed) {
-        const updatedProperty = {
-          ...property,
-          status: newStatus
-        };
-
-        this.annonceService.update(property.id, updatedProperty).subscribe({
+        this.annonceService.changeStatus(property.id).subscribe({
           next: (response) => {
             const index = this.properties.findIndex(p => p.id === property.id);
             if (index !== -1) {
@@ -247,6 +241,7 @@ export class AdminDashboardComponent implements OnInit {
               this.calculateStatistics();
               this.applyFilters();
             }
+            const newStatus = !property.status;
             this.showToast('Success', `Property has been ${newStatus ? 'activated' : 'deactivated'} successfully`, 'success');
           },
           error: (err) => {

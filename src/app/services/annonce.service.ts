@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { catchError, Observable, throwError } from 'rxjs';
 import { Annonce, City, Type, Category } from '../models/annonce';
 import { Router } from '@angular/router';
@@ -123,5 +123,16 @@ export class AnnonceService {
 
   getByUserId(userId: string): Observable<Annonce[]> {
     return this.http.get<Annonce[]>(`${this.apiUrl}/annonces/user/${userId}`);
+  }
+
+  private handleError(error: HttpErrorResponse): Observable<never> {
+    console.error('API error:', error);
+    return throwError(() => new Error('An error occurred. Please try again later.'));
+  }
+
+  changeStatus(id: string): Observable<Annonce> {
+    return this.http.put<Annonce>(`${this.apiUrl}/annonces/${id}/change-status`, {}).pipe(
+      catchError(this.handleError)
+    );
   }
 }
