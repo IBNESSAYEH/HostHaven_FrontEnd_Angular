@@ -11,7 +11,22 @@ import { AuthService } from '../../../services/auth.service';
   styleUrls: ['./navbar.component.scss']
 })
 export class NavbarComponent {
+  userRole: string | null = null;
+
   constructor(private authService: AuthService) {}
+
+  ngOnInit(): void {
+    this.getUserRole();
+  }
+
+  
+
+  getUserRole(): void {
+    const currentUser = this.authService.getCurrentUser();
+    if (currentUser) {
+      this.userRole = currentUser.role;
+    }
+  }
 
   isAuthenticated(): boolean {
     return this.authService.isAuthenticated();

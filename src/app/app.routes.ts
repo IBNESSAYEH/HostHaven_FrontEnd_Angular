@@ -61,7 +61,7 @@ export const routes: Routes = [
     component: HostDashboardComponent,
     canActivate: [() => inject(AuthGuard).canActivate()]
   },{
-    path: 'admin',
+    path: 'dashboard/admin',
     component: AdminDashboardComponent,
     canActivate: [AdminGuard]
   },

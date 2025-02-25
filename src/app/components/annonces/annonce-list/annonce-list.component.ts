@@ -30,7 +30,6 @@ export class AnnonceListComponent implements OnInit {
   types: Type[] = [];
   error: string | null = null;
 
-
   filters: AnnonceFilters = {
     searchTerm: '',
     city: '',
@@ -43,11 +42,10 @@ export class AnnonceListComponent implements OnInit {
   totalPages = 1;
   isLoading = true;
 
-
   constructor(
     private annonceService: AnnonceService,
     public authService: AuthService
-  ) {  }
+  ) { }
 
   ngOnInit() {
     this.loadAnnonces();
@@ -63,8 +61,7 @@ export class AnnonceListComponent implements OnInit {
           this.annonces = data;
           this.filteredAnnonces = data;
           this.extractFilters();
-          console.log(data)
-          // data ? console.log(data) : console.log("no data")
+          console.log(data);
         } else {
           this.annonces = [];
           this.filteredAnnonces = [];
@@ -81,13 +78,20 @@ export class AnnonceListComponent implements OnInit {
   }
 
   extractFilters() {
-    if (this.annonces && this.annonces.length > 0) {
-      this.cities = [...new Set(this.annonces.map(a => a.city))];
-      this.types = [...new Set(this.annonces.map(a => a.type))];
-    } else {
-      this.cities = [];
-      this.types = [];
-    }
+    const uniqueCities = new Map<string, City>();
+    const uniqueTypes = new Map<string, Type>();
+
+    this.annonces.forEach(annonce => {
+      if (annonce.city && annonce.city.id) {
+        uniqueCities.set(annonce.city.id, annonce.city);
+      }
+      if (annonce.type && annonce.type.id) {
+        uniqueTypes.set(annonce.type.id, annonce.type);
+      }
+    });
+
+    this.cities = Array.from(uniqueCities.values());
+    this.types = Array.from(uniqueTypes.values());
   }
 
   filter() {
@@ -96,8 +100,11 @@ export class AnnonceListComponent implements OnInit {
         annonce.title.toLowerCase().includes(this.filters.searchTerm.toLowerCase()) ||
         annonce.description.toLowerCase().includes(this.filters.searchTerm.toLowerCase());
 
-      const matchesCity = !this.filters.city || annonce.city.id === this.filters.city;
-      const matchesType = !this.filters.type || annonce.type.id === this.filters.type;
+      const matchesCity = !this.filters.city ||
+        (annonce.city && annonce.city.id === this.filters.city);
+
+      const matchesType = !this.filters.type ||
+        (annonce.type && annonce.type.id === this.filters.type);
 
       let matchesPrice = true;
       if (this.filters.priceRange) {
@@ -112,6 +119,23 @@ export class AnnonceListComponent implements OnInit {
 
     this.currentPage = 1;
     this.calculatePagination();
+  }
+
+  resetFilters() {
+    this.filters = {
+      searchTerm: '',
+      city: '',
+      type: '',
+      priceRange: ''
+    };
+    this.filteredAnnonces = [...this.annonces];
+    this.currentPage = 1;
+    this.calculatePagination();
+  }
+
+  get paginatedAnnonces(): Annonce[] {
+    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+    return this.filteredAnnonces.slice(startIndex, startIndex + this.itemsPerPage);
   }
 
   get pages(): number[] {
