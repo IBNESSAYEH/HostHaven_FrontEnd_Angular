@@ -192,24 +192,32 @@ export class UserManagementComponent implements OnInit {
   // }
 
 
-
   toggleUserStatus(user: AdminUser): void {
-    const updatedUser = {
-      ...user,
-      emailVerificationStatus: !user.emailVerificationStatus
-    };
-
-    this.userService.updateUser(user.id, updatedUser).subscribe({
-      next: (response) => {
-        const index = this.users.findIndex(u => u.id === user.id);
-        if (index !== -1) {
-          this.users[index].emailVerificationStatus = response.emailVerificationStatus;
+    if (user.emailVerificationStatus) {
+      this.userService.unverifyUserEmail(user.id).subscribe({
+        next: (response) => {
+          const index = this.users.findIndex(u => u.id === user.id);
+          if (index !== -1) {
+            this.users[index].emailVerificationStatus = response.emailVerificationStatus;
+          }
+        },
+        error: (err) => {
+          console.error('Error unverifying user email:', err);
         }
-      },
-      error: (err) => {
-        console.error('Error toggling user status:', err);
-      }
-    });
+      });
+    } else {
+      this.userService.verifyUserEmail(user.id).subscribe({
+        next: (response) => {
+          const index = this.users.findIndex(u => u.id === user.id);
+          if (index !== -1) {
+            this.users[index].emailVerificationStatus = response.emailVerificationStatus;
+          }
+        },
+        error: (err) => {
+          console.error('Error verifying user email:', err);
+        }
+      });
+    }
   }
 
   deleteUser(id: string): void {

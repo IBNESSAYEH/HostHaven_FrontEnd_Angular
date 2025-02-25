@@ -88,4 +88,17 @@ export class UsersService {
       };
     }
 
+
+    verifyUserEmail(userId: string): Observable<AdminUser> {
+      return this.http.put<UserData>(`${this.apiUrl}/${userId}/verification-email`, {}).pipe(
+        map(user => this.mapToAdminUserInterface(user))
+      );
+    }
+
+    unverifyUserEmail(userId: string): Observable<AdminUser> {
+      return this.http.put<UserData>(`${this.apiUrl}/${userId}/unverification-email`, {}).pipe(
+        map(user => this.mapToAdminUserInterface(user))
+      );
+    }
+
   }
