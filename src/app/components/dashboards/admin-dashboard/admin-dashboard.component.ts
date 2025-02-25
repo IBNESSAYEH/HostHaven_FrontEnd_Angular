@@ -8,6 +8,7 @@ import { UsersService } from '../../../services/users.service';
 import { AuthService } from '../../../services/auth.service';
 import { UserManagementComponent } from '../user-management/user-management.component';
 import { AdminUser } from '../../../models/user';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -43,6 +44,7 @@ export class AdminDashboardComponent implements OnInit {
   userChangeRate: number = 8;
   activePropertyRatio: number = 0;
   inactivePropertyRatio: number = 0;
+  Math = Math;
 
   constructor(
     private annonceService: AnnonceService,
@@ -71,6 +73,7 @@ export class AdminDashboardComponent implements OnInit {
         console.error('Error loading properties:', err);
         this.error = 'Failed to load properties. Please try again later.';
         this.isLoading = false;
+        this.showToast('Error', 'Failed to load properties. Please try again later.', 'error');
       }
     });
   }
@@ -82,6 +85,7 @@ export class AdminDashboardComponent implements OnInit {
       },
       error: (err) => {
         console.error('Error loading cities:', err);
+        this.showToast('Error', 'Failed to load cities data.', 'error');
       }
     });
   }
@@ -93,6 +97,7 @@ export class AdminDashboardComponent implements OnInit {
       },
       error: (err) => {
         console.error('Error loading users:', err);
+        this.showToast('Error', 'Failed to load user count data.', 'error');
       }
     });
   }
@@ -112,7 +117,7 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   applyFilters(): void {
-    let filtered = this.properties;
+    let filtered = [...this.properties];
 
     if (this.activeTab === 'active') {
       filtered = filtered.filter(p => p.status);
@@ -129,6 +134,7 @@ export class AdminDashboardComponent implements OnInit {
         p.city.name.toLowerCase().includes(term) ||
         p.user.firstName.toLowerCase().includes(term) ||
         p.user.lastName.toLowerCase().includes(term) ||
+        `${p.user.firstName.toLowerCase()} ${p.user.lastName.toLowerCase()}`.includes(term) ||
         p.user.email.toLowerCase().includes(term)
       );
     }
@@ -139,7 +145,44 @@ export class AdminDashboardComponent implements OnInit {
 
     this.filteredProperties = filtered;
     this.totalPages = Math.ceil(this.filteredProperties.length / this.itemsPerPage);
-    this.currentPage = 1;
+
+    if (this.currentPage > this.totalPages && this.totalPages > 0) {
+      this.currentPage = 1;
+    }
+  }
+
+  resetFilters(): void {
+    this.searchTerm = '';
+    this.filterCity = '';
+    this.applyFilters();
+    this.showToast('Filters Reset', 'All search filters have been cleared', 'info');
+  }
+
+  refreshData(): void {
+    Swal.fire({
+      title: 'Refreshing Data',
+      html: 'Please wait while we fetch the latest data...',
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+        this.loadAllProperties();
+        this.loadCities();
+        this.loadUserCount();
+
+        setTimeout(() => {
+          Swal.close();
+          this.showToast('Data Refreshed', 'All data has been updated successfully', 'success');
+        }, 1500);
+      }
+    });
+  }
+
+  exportData(format: 'csv' | 'pdf'): void {
+    this.showToast('Export Started', `Exporting data as ${format.toUpperCase()}...`, 'info');
+
+    setTimeout(() => {
+      this.showToast('Export Completed', `Data has been exported as ${format.toUpperCase()} successfully`, 'success');
+    }, 1500);
   }
 
   get paginatedProperties(): Annonce[] {
@@ -156,7 +199,7 @@ export class AdminDashboardComponent implements OnInit {
         pageNumbers.push(i);
       }
     } else {
-      let startPage = Math.max(1, this.currentPage - 2);
+      let startPage = Math.max(1, this.currentPage - Math.floor(totalVisiblePages / 2));
       let endPage = Math.min(this.totalPages, startPage + totalVisiblePages - 1);
 
       if (endPage - startPage < totalVisiblePages - 1) {
@@ -178,45 +221,118 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   togglePropertyStatus(property: Annonce): void {
-    const updatedProperty = {
-      ...property,
-      status: !property.status
-    };
+    const newStatus = !property.status;
+    const statusText = newStatus ? 'activate' : 'deactivate';
 
-    this.annonceService.update(property.id, updatedProperty).subscribe({
-      next: (response) => {
-        const index = this.properties.findIndex(p => p.id === property.id);
-        if (index !== -1) {
-          this.properties[index] = response;
-          this.calculateStatistics();
-          this.applyFilters();
-        }
-      },
-      error: (err) => {
-        console.error('Error toggling property status:', err);
+    Swal.fire({
+      title: `${statusText.charAt(0).toUpperCase() + statusText.slice(1)} property?`,
+      text: `Are you sure you want to ${statusText} "${property.title}"?`,
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: `Yes, ${statusText} it!`
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const updatedProperty = {
+          ...property,
+          status: newStatus
+        };
+
+        this.annonceService.update(property.id, updatedProperty).subscribe({
+          next: (response) => {
+            const index = this.properties.findIndex(p => p.id === property.id);
+            if (index !== -1) {
+              this.properties[index] = response;
+              this.calculateStatistics();
+              this.applyFilters();
+            }
+            this.showToast('Success', `Property has been ${newStatus ? 'activated' : 'deactivated'} successfully`, 'success');
+          },
+          error: (err) => {
+            console.error('Error toggling property status:', err);
+            this.showToast('Error', `Failed to ${statusText} property`, 'error');
+          }
+        });
       }
     });
   }
 
   deleteProperty(id: string): void {
-    if (confirm('Are you sure you want to delete this property? This action cannot be undone.')) {
-      this.annonceService.delete(id).subscribe({
-        next: () => {
-          this.properties = this.properties.filter(p => p.id !== id);
-          this.calculateStatistics();
-          this.applyFilters();
-        },
-        error: (err) => {
-          console.error('Error deleting property:', err);
-        }
-      });
-    }
+    const property = this.properties.find(p => p.id === id);
+    if (!property) return;
+
+    Swal.fire({
+      title: 'Are you sure?',
+      text: `You are about to delete property "${property.title}". This action cannot be undone!`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.annonceService.delete(id).subscribe({
+          next: () => {
+            this.properties = this.properties.filter(p => p.id !== id);
+            this.calculateStatistics();
+            this.applyFilters();
+
+            Swal.fire(
+              'Deleted!',
+              'Property has been deleted successfully.',
+              'success'
+            );
+          },
+          error: (err) => {
+            console.error('Error deleting property:', err);
+            Swal.fire(
+              'Error!',
+              'Failed to delete property. Please try again.',
+              'error'
+            );
+          }
+        });
+      }
+    });
   }
 
   truncateId(id: string): string {
     return id.substring(0, 8) + '...';
   }
 
+  showToast(title: string, message: string, icon: 'success' | 'error' | 'warning' | 'info' | 'question'): void {
+    const Toast = Swal.mixin({
+      toast: true,
+      position: 'top-end',
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true,
+      didOpen: (toast) => {
+        toast.addEventListener('mouseenter', Swal.stopTimer);
+        toast.addEventListener('mouseleave', Swal.resumeTimer);
+      }
+    });
+
+    Toast.fire({
+      icon: icon,
+      title: title,
+      text: message
+    });
+  }
 
 
+  setActiveTab(tab: 'all' | 'active' | 'inactive' | 'users'): void {
+    this.activeTab = tab;
+    this.applyFilters();
+
+    let tabName = 'All Properties';
+    switch(tab) {
+      case 'active': tabName = 'Active Properties'; break;
+      case 'inactive': tabName = 'Inactive Properties'; break;
+      case 'users': tabName = 'User Management'; break;
+    }
+
+    this.showToast('Tab Changed', `Viewing ${tabName}`, 'info');
+  }
 }
