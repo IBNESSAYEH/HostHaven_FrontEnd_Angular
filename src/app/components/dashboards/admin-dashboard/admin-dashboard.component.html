@@ -1,0 +1,230 @@
+<div class="min-h-screen bg-gray-50">
+  <div class="bg-blue-900 text-white shadow">
+    <div class="container mx-auto px-4 py-6">
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div>
+          <h1 class="text-2xl font-bold">Admin Dashboard</h1>
+          <p class="text-blue-200">Manage properties and platform statistics</p>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <button class="btn btn-sm btn-primary gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+            Refresh Data
+          </button>
+          <div class="dropdown dropdown-end">
+            <div tabindex="0" role="button" class="btn btn-sm">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              Export
+            </div>
+            <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
+              <li><a>Export as CSV</a></li>
+              <li><a>Export as PDF</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container mx-auto px-4 py-8">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+      <div class="stats shadow">
+        <div class="stat">
+          <div class="stat-figure text-primary">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+            </svg>
+          </div>
+          <div class="stat-title">Total Properties</div>
+          <div class="stat-value text-primary">{{totalProperties}}</div>
+          <div class="stat-desc">{{propertyChangeRate}}% from last month</div>
+        </div>
+      </div>
+
+      <div class="stats shadow">
+        <div class="stat">
+          <div class="stat-figure text-success">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+            </svg>
+          </div>
+          <div class="stat-title">Total Users</div>
+          <div class="stat-value text-success">{{totalUsers}}</div>
+          <div class="stat-desc">{{userChangeRate}}% from last month</div>
+        </div>
+      </div>
+
+      <div class="stats shadow">
+        <div class="stat">
+          <div class="stat-figure text-secondary">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <div class="stat-title">Active Listings</div>
+          <div class="stat-value text-secondary">{{activeProperties}}</div>
+          <div class="stat-desc">{{activePropertyRatio}}% of total properties</div>
+        </div>
+      </div>
+
+      <div class="stats shadow">
+        <div class="stat">
+          <div class="stat-figure text-warning">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <div class="stat-title">Inactive Listings</div>
+          <div class="stat-value text-warning">{{inactiveProperties}}</div>
+          <div class="stat-desc">{{inactivePropertyRatio}}% of total properties</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tabs tabs-boxed bg-white mb-6">
+      <a class="tab" [class.tab-active]="activeTab === 'all'" (click)="activeTab = 'all'">All Properties</a>
+      <a class="tab" [class.tab-active]="activeTab === 'active'" (click)="activeTab = 'active'">Active</a>
+      <a class="tab" [class.tab-active]="activeTab === 'inactive'" (click)="activeTab = 'inactive'">Inactive</a>
+      <a class="tab" [class.tab-active]="activeTab === 'users'" (click)="activeTab = 'users'">Users</a>
+    </div>
+
+    <div *ngIf="activeTab === 'all' || activeTab === 'active' || activeTab === 'inactive'" class="card bg-white shadow-sm">
+      <div class="card-body">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+          <h2 class="card-title">
+            {{ activeTab === 'all' ? 'All Properties' :
+               activeTab === 'active' ? 'Active Properties' : 'Inactive Properties' }}
+          </h2>
+          <div class="flex flex-col md:flex-row gap-2">
+            <div class="form-control">
+              <div class="input-group">
+                <input type="text" [(ngModel)]="searchTerm" placeholder="Search..." class="input input-bordered" />
+                <button class="btn btn-square">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <select [(ngModel)]="filterCity" class="select select-bordered">
+              <option value="">All Cities</option>
+              <option *ngFor="let city of cities" [value]="city.id">{{city.name}}</option>
+            </select>
+          </div>
+        </div>
+
+        <div *ngIf="isLoading" class="flex justify-center items-center p-8">
+          <span class="loading loading-spinner loading-lg"></span>
+        </div>
+
+        <div *ngIf="error && !isLoading" class="alert alert-error">
+          <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <span>{{ error }}</span>
+        </div>
+
+        <div *ngIf="!isLoading && !error && filteredProperties.length > 0" class="overflow-x-auto">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Property</th>
+                <th>Owner</th>
+                <th>Location</th>
+                <th>Price</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let property of filteredProperties">
+                <td>
+                  <div class="text-xs text-gray-500">{{truncateId(property.id)}}</div>
+                </td>
+                <td>
+                  <div class="flex items-center gap-3">
+                    <div class="avatar">
+                      <div class="mask mask-squircle w-12 h-12">
+                        <img [src]="'assets/images/pixlr-image-generator-1ebfe583-0068-4415-9b35-5330d6ac9f10.png'" alt="Property image" />
+                      </div>
+                    </div>
+                    <div>
+                      <div class="font-bold">{{property.title}}</div>
+                      <div class="text-sm text-gray-500">{{property.type.name}}</div>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <div class="font-medium">{{property.user.firstName}} {{property.user.lastName}}</div>
+                  <div class="text-xs text-gray-500">{{property.user.email}}</div>
+                </td>
+                <td>
+                  <div class="font-medium">{{property.city.name}}</div>
+                  <div class="text-xs text-gray-500 truncate max-w-xs">{{property.adress}}</div>
+                </td>
+                <td>
+                  <div class="font-medium">${{property.monthPrice}}</div>
+                  <div class="text-xs text-gray-500">${{property.dayPrice}}/day</div>
+                </td>
+                <td>
+                  <div class="badge" [ngClass]="property.status ? 'badge-success' : 'badge-error'">
+                    {{property.status ? 'Active' : 'Inactive'}}
+                  </div>
+                </td>
+                <td>
+                  <div class="flex gap-2">
+                    <button [routerLink]="['/annonces', property.id]" class="btn btn-square btn-ghost btn-xs">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                      </svg>
+                    </button>
+                    <button (click)="togglePropertyStatus(property)" class="btn btn-square btn-ghost btn-xs" [ngClass]="property.status ? 'text-error' : 'text-success'">
+                      <svg *ngIf="property.status" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+                      </svg>
+                      <svg *ngIf="!property.status" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    </button>
+                    <button (click)="deleteProperty(property.id)" class="btn btn-square btn-ghost btn-xs text-error">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div *ngIf="!isLoading && !error && filteredProperties.length === 0" class="text-center py-8">
+          <div class="text-4xl text-gray-300 mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold text-gray-500 mb-1">No properties found</h3>
+          <p class="text-gray-400">Try adjusting your search or filters</p>
+        </div>
+
+        <div *ngIf="!isLoading && !error && filteredProperties.length > 0" class="flex justify-center mt-6">
+          <div class="join">
+            <button class="join-item btn" [disabled]="currentPage === 1" (click)="goToPage(currentPage - 1)">«</button>
+            <button *ngFor="let page of visiblePageNumbers" class="join-item btn" [class.btn-active]="page === currentPage" (click)="goToPage(page)">{{page}}</button>
+            <button class="join-item btn" [disabled]="currentPage === totalPages" (click)="goToPage(currentPage + 1)">»</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="activeTab === 'users'" class="card bg-white shadow-sm">
+      <app-user-management></app-user-management>
+    </div>
+  </div>
+</div>
