@@ -1,8 +1,9 @@
 <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-shadow duration-300 w-full h-full flex flex-col" >
 
   <div class="relative flex-shrink-0">
+    <!-- Updated image tag to dynamically use the first image from the images array with fallback -->
     <img
-      src="assets/images/pixlr-image-generator-26626d39-da3b-4fbe-a237-692a13810365.png"
+      [src]="getAnnonceImage()"
       [alt]="annonce.title"
       class="w-full h-64 object-cover"
     >
@@ -61,18 +62,7 @@
           View Details
         </button>
         <button class="btn btn-primary btn-sm">Book Now</button>
-        @if (annonce.user.id == authService.getUserId()) {
-
-          <button
-            class="btn btn-outline btn-warning btn-sm"
-            [routerLink]="['/annonces/edit', annonce.id]">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
-              <path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" />
-              <path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd" />
-            </svg>
-            Edit Annonce
-          </button>
-        }
+    
       </div>
     </div>
   </div>

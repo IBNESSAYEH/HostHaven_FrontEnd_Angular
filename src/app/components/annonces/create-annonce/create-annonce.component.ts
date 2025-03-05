@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AnnonceService } from '../../../services/annonce.service';
 import { City, Type, Category } from '../../../models/annonce';
@@ -47,6 +47,9 @@ export class CreateAnnonceComponent implements OnInit {
       cityId: ['', Validators.required],
       categoryId: ['', Validators.required],
       typeId: ['', Validators.required],
+      imageLinks: this.fb.array([
+        this.fb.control('', [Validators.pattern('https?://.+')])
+      ]),
       caracteristiques: this.fb.group({
         etage: [0],
         surface: [null, Validators.required],
@@ -61,6 +64,24 @@ export class CreateAnnonceComponent implements OnInit {
         numberSalleBain: [1, Validators.required]
       })
     });
+  }
+
+  get imageLinksFormArray() {
+    return this.annonceForm.get('imageLinks') as FormArray;
+  }
+
+  addImageLink() {
+    this.imageLinksFormArray.push(
+      this.fb.control('', [Validators.pattern('https?://.+')])
+    );
+  }
+
+  removeImageLink(index: number) {
+    this.imageLinksFormArray.removeAt(index);
+    // Ensure at least one input field is always available
+    if (this.imageLinksFormArray.length === 0) {
+      this.addImageLink();
+    }
   }
 
   ngOnInit(): void {
@@ -120,6 +141,9 @@ export class CreateAnnonceComponent implements OnInit {
       }
 
       const formData = this.annonceForm.value;
+
+      // Filter out empty image links
+      formData.imageLinks = formData.imageLinks.filter((url: string) => url.trim() !== '');
 
       this.annonceService.create(formData).subscribe({
         next: (response) => {
