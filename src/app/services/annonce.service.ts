@@ -46,6 +46,7 @@ export class AnnonceService {
       cityId: annonceData.cityId,
       typeId: annonceData.typeId,
       categoryId: annonceData.categoryId,
+      imageLinks: annonceData.imageLinks || [], // Include image links
       caracteristiques: {
         etage: Number(annonceData.caracteristiques.etage || 0),
         surface: Math.max(1, Number(annonceData.caracteristiques.surface || 1)),

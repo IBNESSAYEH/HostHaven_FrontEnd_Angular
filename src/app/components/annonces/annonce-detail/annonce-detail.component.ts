@@ -1,12 +1,16 @@
 import { CommonModule } from "@angular/common";
 import { Component, OnInit } from "@angular/core";
+import { FormsModule } from "@angular/forms";
 import { ActivatedRoute, RouterLink } from "@angular/router";
 import { Annonce } from "../../../models/annonce";
 import { AnnonceService } from "../../../services/annonce.service";
-import { AuthService } from "../../../services/auth.service";
-import { FormsModule } from "@angular/forms";
 
-// src/app/features/annonces/annonce-detail/annonce-detail.component.ts
+interface ContactForm {
+  name: string;
+  email: string;
+  message: string;
+}
+
 @Component({
   selector: 'app-annonce-detail',
   standalone: true,
@@ -19,7 +23,9 @@ export class AnnonceDetailComponent implements OnInit {
   isLoading = true;
   error: string | null = null;
   activeImageIndex = 0;
-  contactForm = {
+  defaultImagePath = 'assets/images/pixlr-image-generator-1ebfe583-0068-4415-9b35-5330d6ac9f10.png';
+
+  contactForm: ContactForm = {
     name: '',
     email: '',
     message: ''
@@ -27,8 +33,7 @@ export class AnnonceDetailComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private annonceService: AnnonceService,
-    private authService: AuthService
+    private annonceService: AnnonceService
   ) {}
 
   ngOnInit() {
@@ -52,28 +57,50 @@ export class AnnonceDetailComponent implements OnInit {
     });
   }
 
-  onContactSubmit() {
-    console.log('Contact form submitted:', this.contactForm);
-    // Implement your contact form submission logic here
+  setActiveImage(index: number) {
+    this.activeImageIndex = index;
   }
 
-  onCall() {
-    if (this.annonce?.phone) {
-      window.location.href = `tel:${this.annonce.phone}`;
+  getMainImage(): string {
+    if (this.annonce && this.annonce.images && this.annonce.images.length > 0) {
+      return this.annonce.images[this.activeImageIndex].imageURL;
     }
+    return this.defaultImagePath;
+  }
+
+  onContactSubmit() {
+    // Here you would handle sending the contact form data to your backend
+    console.log('Contact form submitted:', this.contactForm);
+    // Reset form after submission
+    this.contactForm = {
+      name: '',
+      email: '',
+      message: ''
+    };
+
+    // Show confirmation to user (you could add a toast notification here)
+    alert('Your message has been sent to the property owner!');
   }
 
   onShare() {
+    // Check if Web Share API is available
     if (navigator.share) {
       navigator.share({
-        title: this.annonce?.title || 'Property Details',
-        text: this.annonce?.description || '',
+        title: this.annonce?.title || 'Property Listing',
+        text: `Check out this property: ${this.annonce?.title}`,
         url: window.location.href
       })
-      .catch((error) => console.log('Error sharing:', error));
+      .catch(error => console.log('Error sharing:', error));
     } else {
       // Fallback for browsers that don't support Web Share API
-      console.log('Web Share API not supported');
+      // Copy link to clipboard
+      navigator.clipboard.writeText(window.location.href)
+        .then(() => {
+          alert('Link copied to clipboard!');
+        })
+        .catch(err => {
+          console.error('Failed to copy: ', err);
+        });
     }
   }
 }

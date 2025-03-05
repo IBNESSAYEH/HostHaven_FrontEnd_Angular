@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { Annonce } from '../../../models/annonce';
 import { AnnonceService } from '../../../services/annonce.service';
 import { AuthService } from '../../../services/auth.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-host-dashboard',
@@ -19,7 +20,7 @@ export class HostDashboardComponent implements OnInit {
   error: string | null = null;
   searchTerm = '';
   filterStatus = '';
-
+  defaultImagePath = 'assets/images/pixlr-image-generator-1ebfe583-0068-4415-9b35-5330d6ac9f10.png';
 
   totalProperties = 0;
   activeProperties = 0;
@@ -38,7 +39,7 @@ export class HostDashboardComponent implements OnInit {
   private loadProperties() {
     const userId = this.authService.getUserId();
     if (!userId) {
-      this.error = 'User not found';
+      this.showErrorAlert('User not found', 'Please log in to view your properties.');
       return;
     }
 
@@ -51,7 +52,7 @@ export class HostDashboardComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error loading properties:', error);
-        this.error = 'Failed to load properties';
+        this.showErrorAlert('Failed to load properties', 'Please try again later.');
         this.isLoading = false;
       }
     });
@@ -84,36 +85,122 @@ export class HostDashboardComponent implements OnInit {
   }
 
   deleteProperty(id: string) {
-    if (confirm('Are you sure you want to delete this property?')) {
-      this.annonceService.delete(id).subscribe({
-        next: () => {
-          this.properties = this.properties.filter(p => p.id !== id);
-          this.calculateStats();
-        },
-        error: (error) => {
-          console.error('Error deleting property:', error);
-        }
-      });
-    }
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.performDelete(id);
+      }
+    });
+  }
+
+  private performDelete(id: string) {
+    Swal.fire({
+      title: 'Deleting...',
+      text: 'Please wait while we delete your property',
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+        this.annonceService.delete(id).subscribe({
+          next: () => {
+            this.properties = this.properties.filter(p => p.id !== id);
+            this.calculateStats();
+            Swal.fire(
+              'Deleted!',
+              'Your property has been deleted.',
+              'success'
+            );
+          },
+          error: (error) => {
+            console.error('Error deleting property:', error);
+            Swal.fire(
+              'Error!',
+              'Failed to delete property. Please try again.',
+              'error'
+            );
+          }
+        });
+      }
+    });
   }
 
   togglePropertyStatus(property: Annonce) {
+    const newStatus = !property.status;
+    const statusText = newStatus ? 'activate' : 'deactivate';
+
+    Swal.fire({
+      title: `${newStatus ? 'Activate' : 'Deactivate'} Property?`,
+      text: `Are you sure you want to ${statusText} "${property.title}"?`,
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: `Yes, ${statusText} it!`
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.performStatusToggle(property);
+      }
+    });
+  }
+
+  private performStatusToggle(property: Annonce) {
     const updatedProperty = {
       ...property,
       status: !property.status
     };
 
-    this.annonceService.update(property.id, updatedProperty).subscribe({
-      next: (response) => {
-        const index = this.properties.findIndex(p => p.id === property.id);
-        if (index !== -1) {
-          this.properties[index] = response;
-          this.calculateStats();
-        }
-      },
-      error: (error) => {
-        console.error('Error updating property status:', error);
+    Swal.fire({
+      title: 'Updating...',
+      text: 'Please wait while we update your property',
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+        this.annonceService.changeStatus(property.id).subscribe({
+          next: (response) => {
+            const index = this.properties.findIndex(p => p.id === property.id);
+            if (index !== -1) {
+              this.properties[index] = response;
+              this.calculateStats();
+              Swal.fire(
+                'Updated!',
+                `Property has been ${response.status ? 'activated' : 'deactivated'}.`,
+                'success'
+              );
+            }
+          },
+          error: (error) => {
+            console.error('Error updating property status:', error);
+            Swal.fire(
+              'Error!',
+              'Failed to update property status. Please try again.',
+              'error'
+            );
+          }
+        });
       }
     });
+  }
+
+  // Helper method to show error alerts
+  private showErrorAlert(title: string, text: string) {
+    Swal.fire({
+      icon: 'error',
+      title: title,
+      text: text
+    });
+  }
+
+  // Get the first image or return a default
+  getPropertyImage(property: Annonce): string {
+    if (property && property.images && property.images.length > 0) {
+      return property.images[0].imageURL;
+    }
+    return this.defaultImagePath;
   }
 }
