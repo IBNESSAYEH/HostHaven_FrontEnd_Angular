@@ -13,6 +13,9 @@ import { ProfileComponent } from "./components/user-profile/profile/profile.comp
 import { HostDashboardComponent } from "./components/dashboards/host-dashboard/host-dashboard.component";
 import { AdminDashboardComponent } from "./components/dashboards/admin-dashboard/admin-dashboard.component";
 import { AdminGuard } from "./guards/admin-guard.guard";
+import { BookingComponent } from "./components/booking/booking.component";
+import { BookingSuccessComponent } from "./components/booking-success/booking-success/booking-success.component";
+import { MyBookingsComponent } from "./components/my-bookings/my-bookings/my-bookings.component";
 
 export const routes: Routes = [
 
@@ -64,6 +67,21 @@ export const routes: Routes = [
     path: 'dashboard/admin',
     component: AdminDashboardComponent,
     canActivate: [AdminGuard]
+  },
+  {
+    path: 'annonces/:id/book',
+    component: BookingComponent,
+    canActivate: [() => inject(AuthGuard).canActivate()]
+  },
+  {
+    path: 'booking-success',
+    component: BookingSuccessComponent,
+    canActivate: [() => inject(AuthGuard).canActivate()]
+  },
+  {
+    path: 'bookings',
+    component: MyBookingsComponent,
+    canActivate: [() => inject(AuthGuard).canActivate()]
   },
   {
     path: '**',

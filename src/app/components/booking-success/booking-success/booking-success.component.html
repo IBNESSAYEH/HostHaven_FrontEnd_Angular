@@ -1,0 +1,22 @@
+<div class="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+  <div class="bg-white rounded-lg shadow-md max-w-lg w-full p-8 text-center">
+    <div class="w-20 h-20 rounded-full bg-green-100 text-green-600 flex items-center justify-center mx-auto mb-6">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+      </svg>
+    </div>
+
+    <h1 class="text-2xl font-bold text-gray-800 mb-2">Booking Confirmed!</h1>
+    <p class="text-gray-600 mb-6">Your payment was successful and your booking has been confirmed.</p>
+
+    <div class="bg-gray-50 p-4 rounded-lg mb-6">
+      <p class="text-sm text-gray-500">Booking Reference</p>
+      <p class="text-lg font-medium">{{bookingId || 'Processing...'}}</p>
+    </div>
+
+    <div class="space-y-3">
+      <a routerLink="/bookings" class="btn btn-primary w-full">View My Bookings</a>
+      <a routerLink="/annonce-list" class="btn btn-outline w-full">Browse More Properties</a>
+    </div>
+  </div>
+</div>

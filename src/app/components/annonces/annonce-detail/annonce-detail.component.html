@@ -243,13 +243,17 @@
               <div class="p-6">
                 <!-- Host Info -->
                 <div class="flex items-center gap-4 mb-6 pb-4 border-b">
-                  <div class="avatar">
-                    <div class="w-12 h-12 rounded-full bg-gradient-to-r from-primary to-secondary flex items-center justify-center text-white font-bold text-lg">
-                      {{ annonce.user?.firstName?.[0] }}{{ annonce.user?.lastName?.[0] }}
+                  @if (annonce.user) {
+                    <div class="avatar">
+                      <div class="w-12 h-12 rounded-full bg-gradient-to-r from-primary to-secondary flex items-center justify-center text-white font-bold text-lg">
+                        {{ annonce.user.firstName[0] }}{{ annonce.user.lastName[0] }}
+                      </div>
                     </div>
-                  </div>
+                  }
                   <div>
-                    <div class="font-semibold text-gray-800">{{ annonce.user?.firstName }} {{ annonce.user?.lastName }}</div>
+                    @if (annonce.user) {
+                      <div class="font-medium text-gray-800">{{ annonce.user.firstName }} {{ annonce.user.lastName }}</div>
+                    }
                     <div class="text-gray-500 text-sm">Property Owner</div>
                   </div>
                 </div>
