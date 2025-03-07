@@ -1,0 +1,75 @@
+<div class="min-h-screen bg-base-200">
+  <div class="container mx-auto px-4 py-8">
+    <h1 class="text-2xl font-bold mb-8">My Bookings</h1>
+
+    @if (isLoading) {
+      <div class="flex justify-center items-center min-h-[300px]">
+        <span class="loading loading-spinner loading-lg"></span>
+      </div>
+    } @else if (error) {
+      <div class="alert alert-error max-w-2xl mx-auto">
+        <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+        <span>{{error}}</span>
+        <button class="btn btn-sm btn-outline ml-4" (click)="loadBookings()">Try Again</button>
+      </div>
+    } @else if (bookings.length === 0) {
+      <div class="text-center py-16 bg-white rounded-lg shadow-sm">
+        <div class="mx-auto w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+        </div>
+        <h3 class="text-lg font-semibold mb-2">No Bookings Found</h3>
+        <p class="text-gray-500 mb-6">You haven't made any bookings yet.</p>
+        <a routerLink="/annonce-list" class="btn btn-primary">Browse Properties</a>
+      </div>
+    } @else {
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        @for (booking of bookings; track booking.id) {
+          <div class="card bg-white shadow-sm hover:shadow-md transition-shadow">
+            <div class="card-body">
+              <div class="flex justify-between items-start mb-4">
+                <h2 class="card-title">Booking #{{booking.id.substring(0, 8)}}</h2>
+                <span class="badge" [ngClass]="{
+                  'badge-success': booking.status === 'confirmed',
+                  'badge-warning': booking.status === 'pending',
+                  'badge-error': booking.status === 'cancelled'
+                }">
+                  {{booking.status}}
+                </span>
+              </div>
+
+              <div class="space-y-3 text-sm">
+                <div class="flex justify-between">
+                  <span class="text-gray-500">Check-in</span>
+                  <span>{{booking.startDate | date:'mediumDate'}}</span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-gray-500">Check-out</span>
+                  <span>{{booking.endDate | date:'mediumDate'}}</span>
+                </div>
+                <div class="flex justify-between font-medium">
+                  <span class="text-gray-500">Total</span>
+                  <span>${{booking.totalAmount.toFixed(2)}}</span>
+                </div>
+              </div>
+
+              <div class="divider my-2"></div>
+
+              <div class="card-actions justify-end">
+                <a [routerLink]="['/annonces', booking.annonceId]" class="btn btn-ghost btn-sm">
+                  View Property
+                </a>
+                @if (booking.status !== 'cancelled') {
+                  <button (click)="cancelBooking(booking.id)" class="btn btn-error btn-sm">
+                    Cancel
+                  </button>
+                }
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>
