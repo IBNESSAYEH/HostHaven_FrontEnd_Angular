@@ -16,24 +16,24 @@ import Swal from 'sweetalert2';
 })
 export class HostDashboardComponent implements OnInit {
   properties: Annonce[] = [];
-  isLoading = true;
+    isLoading = true;
   error: string | null = null;
   searchTerm = '';
-  filterStatus = '';
+    filterStatus = '';
   defaultImagePath = 'assets/images/pixlr-image-generator-1ebfe583-0068-4415-9b35-5330d6ac9f10.png';
 
   totalProperties = 0;
-  activeProperties = 0;
+   activeProperties = 0;
   pendingProperties = 0;
-  inactiveProperties = 0;
+   inactiveProperties = 0;
 
   constructor(
-    private annonceService: AnnonceService,
+     private annonceService: AnnonceService,
     private authService: AuthService
   ) {}
 
   ngOnInit() {
-    this.loadProperties();
+     this.loadProperties();
   }
 
   private loadProperties() {
@@ -44,23 +44,23 @@ export class HostDashboardComponent implements OnInit {
     }
 
     this.isLoading = true;
-    this.annonceService.getByUserId(userId).subscribe({
+     this.annonceService.getByUserId(userId).subscribe({
       next: (data) => {
         this.properties = data;
-        this.calculateStats();
+         this.calculateStats();
         this.isLoading = false;
       },
       error: (error) => {
         console.error('Error loading properties:', error);
         this.showErrorAlert('Failed to load properties', 'Please try again later.');
-        this.isLoading = false;
+         this.isLoading = false;
       }
     });
   }
 
   private calculateStats() {
     this.totalProperties = this.properties.length;
-    this.activeProperties = this.properties.filter(p => p.status).length;
+     this.activeProperties = this.properties.filter(p => p.status).length;
     this.inactiveProperties = this.properties.filter(p => !p.status).length;
     this.pendingProperties = 0;
   }
@@ -68,9 +68,9 @@ export class HostDashboardComponent implements OnInit {
   get filteredProperties(): Annonce[] {
     return this.properties.filter(property => {
       const matchesSearch = !this.searchTerm ||
-        property.title.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+         property.title.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
         property.description.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-        property.city.name.toLowerCase().includes(this.searchTerm.toLowerCase());
+          property.city.name.toLowerCase().includes(this.searchTerm.toLowerCase());
 
       const matchesStatus = !this.filterStatus ||
         (this.filterStatus === 'active' && property.status) ||
@@ -88,7 +88,7 @@ export class HostDashboardComponent implements OnInit {
     Swal.fire({
       title: 'Are you sure?',
       text: "You won't be able to revert this!",
-      icon: 'warning',
+       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
@@ -187,7 +187,6 @@ export class HostDashboardComponent implements OnInit {
     });
   }
 
-  // Helper method to show error alerts
   private showErrorAlert(title: string, text: string) {
     Swal.fire({
       icon: 'error',
@@ -196,7 +195,6 @@ export class HostDashboardComponent implements OnInit {
     });
   }
 
-  // Get the first image or return a default
   getPropertyImage(property: Annonce): string {
     if (property && property.images && property.images.length > 0) {
       return property.images[0].imageURL;
