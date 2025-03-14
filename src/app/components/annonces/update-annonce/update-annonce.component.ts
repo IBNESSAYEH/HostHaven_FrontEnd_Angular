@@ -15,17 +15,17 @@ import { AuthService } from '../../../services/auth.service';
 })
 export class UpdateAnnonceComponent implements OnInit {
   annonceForm: FormGroup = this.initializeForm();
-  cities: City[] = [];
+   cities: City[] = [];
   types: Type[] = [];
   categories: Category[] = [];
-  isLoading = false;
+    isLoading = false;
   error: string | null = null;
   annonceId: string;
 
   constructor(
     private fb: FormBuilder,
-    private annonceService: AnnonceService,
-    private authService: AuthService,
+     private annonceService: AnnonceService,
+     private authService: AuthService,
     private route: ActivatedRoute,
     private router: Router
   ) {
@@ -36,24 +36,24 @@ export class UpdateAnnonceComponent implements OnInit {
     return this.fb.group({
       title: ['', [Validators.required, Validators.minLength(5)]],
       description: ['', [Validators.required, Validators.minLength(20)]],
-      monthPrice: [null, [Validators.required, Validators.min(0)]],
+        monthPrice: [null, [Validators.required, Validators.min(0)]],
       weekPrice: [null, [Validators.min(0)]],
       dayPrice: [null, [Validators.min(0)]],
       adress: ['', [Validators.required]],
       phone: ['', [Validators.required, Validators.pattern('^[0-9]{10}$')]],
-      email: ['', [Validators.required, Validators.email]],
+        email: ['', [Validators.required, Validators.email]],
       cityId: ['', Validators.required],
       categoryId: ['', Validators.required],
-      typeId: ['', Validators.required],
+        typeId: ['', Validators.required],
       caracteristiques: this.fb.group({
         etage: [0],
-        surface: [null, Validators.required],
+          surface: [null, Validators.required],
         assenceur: [false],
         balcon: [false],
-        terrasse: [false],
+         terrasse: [false],
         piscine: [false],
         jardin: [false],
-        parking: [false],
+          parking: [false],
         numberRooms: [null, Validators.required],
         numberSale: [1, Validators.required],
         numberSalleBain: [1, Validators.required]
@@ -76,7 +76,7 @@ export class UpdateAnnonceComponent implements OnInit {
 
     forkJoin({
       annonce: this.annonceService.getById(this.annonceId),
-      cities: this.annonceService.getCities(),
+        cities: this.annonceService.getCities(),
       types: this.annonceService.getTypes(),
       categories: this.annonceService.getCategories()
     }).subscribe({
@@ -88,7 +88,7 @@ export class UpdateAnnonceComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error loading data:', error);
-        this.error = 'Failed to load data. Please try again.';
+          this.error = 'Failed to load data. Please try again.';
         this.isLoading = false;
       },
       complete: () => {
@@ -102,21 +102,22 @@ export class UpdateAnnonceComponent implements OnInit {
       title: annonce.title,
       description: annonce.description,
       monthPrice: annonce.monthPrice,
-      weekPrice: annonce.weekPrice,
+        weekPrice: annonce.weekPrice,
       dayPrice: annonce.dayPrice,
       adress: annonce.adress,
       phone: annonce.phone,
-      email: annonce.email,
+        email: annonce.email,
       cityId: annonce.city.id,
       categoryId: annonce.category.id,
-      typeId: annonce.type.id,
+       typeId: annonce.type.id,
       caracteristiques: {
         etage: annonce.caracteristiques.etage,
         surface: annonce.caracteristiques.surface,
-        assenceur: annonce.caracteristiques.assenceur,
+          assenceur: annonce.caracteristiques.assenceur,
         balcon: annonce.caracteristiques.balcon,
         terrasse: annonce.caracteristiques.terrasse,
         piscine: annonce.caracteristiques.piscine,
+
         jardin: annonce.caracteristiques.jardin,
         parking: annonce.caracteristiques.parking,
         numberRooms: annonce.caracteristiques.numberRooms,
@@ -164,7 +165,7 @@ export class UpdateAnnonceComponent implements OnInit {
     const control = this.annonceForm.get(fieldName);
     if (control && control.errors) {
       if (control.errors['required']) return 'This field is required';
-      if (control.errors['minlength']) return `Minimum length is ${control.errors['minlength'].requiredLength} characters`;
+        if (control.errors['minlength']) return `Minimum length is ${control.errors['minlength'].requiredLength} characters`;
       if (control.errors['min']) return `Minimum value is ${control.errors['min'].min}`;
       if (control.errors['email']) return 'Invalid email format';
       if (control.errors['pattern']) return 'Invalid format';
