@@ -180,7 +180,6 @@
     </div>
   </div>
 
-  <!-- User Detail Modal -->
   <div *ngIf="selectedUser" class="modal modal-open">
     <div class="modal-box max-w-2xl">
       <button (click)="selectedUser = null" class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
@@ -240,7 +239,6 @@
     <div class="modal-backdrop" (click)="selectedUser = null"></div>
   </div>
 
-  <!-- Edit User Modal -->
   <div *ngIf="editingUser" class="modal modal-open">
     <div class="modal-box max-w-2xl">
       <button (click)="cancelEdit()" class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>

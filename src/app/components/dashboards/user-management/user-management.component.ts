@@ -16,25 +16,25 @@ import Swal from 'sweetalert2';
 export class UserManagementComponent implements OnInit {
   users: AdminUser[] = [];
   filteredUsers: AdminUser[] = [];
-  selectedUser: AdminUser | null = null;
+    selectedUser: AdminUser | null = null;
   editingUser: AdminUser | null = null;
-  userForm: FormGroup;
+   userForm: FormGroup;
   user: AdminUser | null = null;
   Math = Math;
 
   searchTerm: string = '';
-  filterRole: string = '';
+   filterRole: string = '';
 
   currentPage: number = 1;
-  itemsPerPage: number = 10;
+   itemsPerPage: number = 10;
   totalPages: number = 1;
 
   isLoading: boolean = true;
-  error: string | null = null;
+   error: string | null = null;
 
   constructor(
     private userService: UsersService,
-    private fb: FormBuilder
+     private fb: FormBuilder
   ) {
     this.userForm = this.createUserForm();
   }
@@ -46,10 +46,10 @@ export class UserManagementComponent implements OnInit {
   private createUserForm(): FormGroup {
     return this.fb.group({
       firstName: ['', [Validators.required, Validators.minLength(2)]],
-      lastName: ['', [Validators.required, Validators.minLength(2)]],
+       lastName: ['', [Validators.required, Validators.minLength(2)]],
       email: ['', [Validators.required, Validators.email]],
       phone: ['', [Validators.pattern('^[0-9]{10}$')]],
-      role: ['', Validators.required],
+       role: ['', Validators.required],
       emailVerificationStatus: [false]
     });
   }
@@ -61,12 +61,12 @@ export class UserManagementComponent implements OnInit {
     this.userService.getAllUsers().subscribe({
       next: (data) => {
         this.users = data;
-        this.applyFilters();
+         this.applyFilters();
         this.isLoading = false;
       },
       error: (err) => {
         console.error('Error loading users:', err);
-        this.error = 'Failed to load users. Please try again later.';
+         this.error = 'Failed to load users. Please try again later.';
         this.isLoading = false;
 
         this.showToast('Error', 'Failed to load users. Please try again later.', 'error');
@@ -80,7 +80,7 @@ export class UserManagementComponent implements OnInit {
     if (this.searchTerm && this.searchTerm.trim() !== '') {
       const term = this.searchTerm.toLowerCase().trim();
       filtered = filtered.filter(u =>
-        u.firstName.toLowerCase().includes(term) ||
+         u.firstName.toLowerCase().includes(term) ||
         u.lastName.toLowerCase().includes(term) ||
         `${u.firstName.toLowerCase()} ${u.lastName.toLowerCase()}`.includes(term) ||
         u.email.toLowerCase().includes(term) ||
@@ -171,9 +171,9 @@ export class UserManagementComponent implements OnInit {
 
     this.userForm.patchValue({
       firstName: user.firstName,
-      lastName: user.lastName,
+        lastName: user.lastName,
       email: user.email,
-      phone: user.phone || '',
+        phone: user.phone || '',
       role: user.role,
       emailVerificationStatus: user.emailVerificationStatus
     });
@@ -191,7 +191,7 @@ export class UserManagementComponent implements OnInit {
       title: `${action.charAt(0).toUpperCase() + action.slice(1)} user email?`,
       text: `Are you sure you want to ${action} email for ${user.firstName} ${user.lastName}?`,
       icon: 'question',
-      showCancelButton: true,
+       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
       confirmButtonText: `Yes, ${action} it!`
