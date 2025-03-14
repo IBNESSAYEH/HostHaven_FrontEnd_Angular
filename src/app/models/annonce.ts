@@ -3,7 +3,7 @@
 
 export interface AnnonceFilters {
   searchTerm?: string;
-  city?: string;
+   city?: string;
   type?: string;
   priceRange?: string;
 }
@@ -14,7 +14,7 @@ export interface City{
 }
 
 export interface Type{
-  id: string,
+   id: string,
   name: string
 }
 
@@ -27,12 +27,12 @@ export interface Category{
 export interface Caracteristiques {
   id: string;
   etage: number;
-  surface: number;
+   surface: number;
   assenceur: boolean;
   balcon: boolean;
   terrasse: boolean;
   piscine: boolean;
-  jardin: boolean;
+   jardin: boolean;
   parking: boolean;
   numberRooms: number;
   numberSale: number;
@@ -46,18 +46,18 @@ export interface Annonce {
   id: string;
   title: string;
   description: string;
-  createdAt: Date;
+   createdAt: Date;
   status: boolean;
   adress: string;
   monthPrice: number;
   weekPrice: number;
-  dayPrice: number;
+    dayPrice: number;
   phone: string;
   email: string;
   caracteristiques: Caracteristiques;
   images: Image[];
   user: User;
-  city: City;
+   city: City;
   category: Category;
   type: Type;
 }
@@ -66,12 +66,12 @@ export interface Caracteristiques {
   id: string;
   etage: number;
   surface: number;
-  assenceur: boolean;
+   assenceur: boolean;
   balcon: boolean;
   terrasse: boolean;
   piscine: boolean;
   jardin: boolean;
-  parking: boolean;
+   parking: boolean;
   numberRooms: number;
   numberSale: number;
   numberSalleBain: number;
@@ -81,9 +81,9 @@ export interface Caracteristiques {
 
 export interface User {
   id: string;
-  firstName: string;
+   firstName: string;
   lastName: string;
-  email: string;
+   email: string;
   phone: string;
   profile: string;
 }

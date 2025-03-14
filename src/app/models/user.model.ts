@@ -2,11 +2,11 @@
 export interface User {
   id: string;
   firstName: string;
-  lastName: string;
+   lastName: string;
   email: string;
-  phone: string;
+   phone: string;
   profile: string;
-  role: 'ADMIN' | 'USER' | 'EMPLOYEE';
+   role: 'ADMIN' | 'USER' | 'EMPLOYEE';
   emailVerificationStatus: boolean;
 }
 
@@ -18,12 +18,12 @@ export interface LoginRequest {
 
 export interface RegisterRequest {
   firstname: string;
-  lastname: string;
+   lastname: string;
   email: string;
-  password: string;
+   password: string;
   role?: 'ADMIN' | 'USER' | 'EMPLOYEE';
 }
 
 export interface AuthResponse {
-  token: string;
+   token: string;
 }
