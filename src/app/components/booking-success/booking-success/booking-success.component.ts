@@ -16,11 +16,11 @@ import { RouterLink, ActivatedRoute } from '@angular/router';
 export class BookingSuccessComponent implements OnInit {
   bookingId: string | null = null;
 
-  constructor(private route: ActivatedRoute) {}
+   constructor(private route: ActivatedRoute) {}
 
   ngOnInit() {
     this.route.queryParams.subscribe(params => {
-      this.bookingId = params['booking_id'] || null;
+        this.bookingId = params['booking_id'] || null;
     });
   }
 }
