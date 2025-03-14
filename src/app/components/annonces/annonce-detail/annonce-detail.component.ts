@@ -69,21 +69,17 @@ export class AnnonceDetailComponent implements OnInit {
   }
 
   onContactSubmit() {
-    // Here you would handle sending the contact form data to your backend
     console.log('Contact form submitted:', this.contactForm);
-    // Reset form after submission
     this.contactForm = {
       name: '',
       email: '',
       message: ''
     };
 
-    // Show confirmation to user (you could add a toast notification here)
     alert('Your message has been sent to the property owner!');
   }
 
   onShare() {
-    // Check if Web Share API is available
     if (navigator.share) {
       navigator.share({
         title: this.annonce?.title || 'Property Listing',
@@ -92,8 +88,6 @@ export class AnnonceDetailComponent implements OnInit {
       })
       .catch(error => console.log('Error sharing:', error));
     } else {
-      // Fallback for browsers that don't support Web Share API
-      // Copy link to clipboard
       navigator.clipboard.writeText(window.location.href)
         .then(() => {
           alert('Link copied to clipboard!');
