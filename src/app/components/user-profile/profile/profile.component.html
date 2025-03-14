@@ -1,7 +1,6 @@
 <div class="min-h-screen bg-base-200 py-8">
   <div class="container mx-auto px-4">
     <div class="max-w-4xl mx-auto">
-      <!-- Profile Header -->
       <div class="text-center mb-8">
         <div class="avatar mb-4">
           <div class="w-24 h-24 rounded-full bg-primary flex items-center justify-center text-3xl font-bold text-white">
@@ -12,9 +11,7 @@
         <p class="text-gray-600">Member since {{ formatDate(userInfo?.inscriptionDate) }}</p>
       </div>
 
-      <!-- Profile Content -->
       <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
-        <!-- Left Column - User Info -->
         <div class="md:col-span-4">
           <div class="card bg-base-100 shadow-xl">
             <div class="card-body">
@@ -45,7 +42,6 @@
           </div>
         </div>
 
-        <!-- Right Column - Edit Form -->
         <div class="md:col-span-8">
           <div class="card bg-base-100 shadow-xl">
             <div class="card-body">
@@ -121,7 +117,6 @@
                 </div>
               </form>
 
-              <!-- Change Password Section -->
               <div class="divider"></div>
               <h3 class="font-semibold mb-4">Change Password</h3>
               <form [formGroup]="passwordForm" (ngSubmit)="onPasswordChange()" class="space-y-4">

@@ -23,12 +23,12 @@ export class ProfileComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private authService: AuthService,
+      private authService: AuthService,
     private userService: UsersService,
-    private router: Router
+     private router: Router
   ) {
     this.profileForm = this.initializeProfileForm();
-    this.passwordForm = this.initializePasswordForm();
+     this.passwordForm = this.initializePasswordForm();
   }
 
   ngOnInit() {
@@ -42,16 +42,16 @@ export class ProfileComponent implements OnInit {
 
   private initializeProfileForm(): FormGroup {
     return this.fb.group({
-      firstName: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(20)]],
+       firstName: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(20)]],
       lastName: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(20)]],
-      phone: ['', [Validators.required, Validators.pattern('^[0-9]{10}$')]]
+       phone: ['', [Validators.required, Validators.pattern('^[0-9]{10}$')]]
     });
   }
 
   private initializePasswordForm(): FormGroup {
     return this.fb.group({
       currentPassword: ['', [Validators.required]],
-      newPassword: ['', [Validators.required, Validators.minLength(6)]],
+       newPassword: ['', [Validators.required, Validators.minLength(6)]],
       confirmPassword: ['', [Validators.required]]
     }, { validators: this.passwordMatchValidator });
   }
@@ -67,7 +67,7 @@ export class ProfileComponent implements OnInit {
       this.userInfo = user;
       this.profileForm.patchValue({
         firstName: user.firstName,
-        lastName: user.lastName,
+         lastName: user.lastName,
         phone: user.phone
       });
     }
@@ -124,14 +124,12 @@ export class ProfileComponent implements OnInit {
       ).subscribe({
         next: (response) => {
           this.successMessage = 'Profile updated successfully';
-          // Update the stored user info
           const currentUser = this.authService.getCurrentUser();
           if (currentUser) {
             const updatedUser = {
               ...currentUser,
               ...this.profileForm.value
             };
-            // Update the stored user info
             localStorage.setItem('user', JSON.stringify(updatedUser));
             this.userInfo = updatedUser;
           }
