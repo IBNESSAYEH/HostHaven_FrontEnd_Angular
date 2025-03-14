@@ -1,7 +1,8 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, AbstractControl, ValidationErrors } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 import Swal from 'sweetalert2';
 import { Annonce } from '../../models/annonce';
 import { AnnonceService } from '../../services/annonce.service';
@@ -21,6 +22,7 @@ export class BookingComponent implements OnInit, AfterViewInit {
   bookingForm: FormGroup;
   isLoading = true;
   error: string | null = null;
+  dateOverlapError: string | null = null;
   totalPrice = 0;
   numberOfDays = 0;
   paymentProcessing = false;
@@ -29,6 +31,8 @@ export class BookingComponent implements OnInit, AfterViewInit {
   currentDate: string;
   paymentElementMounted = false;
   processingPayment = false;
+  checkingAvailability = false;
+  existingBookings: any[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -36,11 +40,12 @@ export class BookingComponent implements OnInit, AfterViewInit {
     private router: Router,
     private annonceService: AnnonceService,
     private paymentService: PaymentService,
-    private authService: AuthService
+    private authService: AuthService,
+    private http: HttpClient
   ) {
     this.bookingForm = this.fb.group({
-      startDate: ['', Validators.required],
-      endDate: ['', Validators.required],
+      startDate: ['', [Validators.required, this.pastDateValidator()]],
+      endDate: ['', [Validators.required, this.pastDateValidator()]],
       name: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       phone: ['', Validators.required]
@@ -67,6 +72,7 @@ export class BookingComponent implements OnInit, AfterViewInit {
     this.route.params.subscribe(params => {
       const id = params['id'];
       this.loadProperty(id);
+      this.loadExistingBookings(id);
     });
 
     const user = this.authService.userSubject?.getValue();
@@ -77,14 +83,20 @@ export class BookingComponent implements OnInit, AfterViewInit {
         phone: user.phone || ''
       });
     }
+
+    this.bookingForm.get('startDate')?.valueChanges.subscribe(() => {
+      this.checkDateAvailability();
+    });
+
+    this.bookingForm.get('endDate')?.valueChanges.subscribe(() => {
+      this.checkDateAvailability();
+    });
   }
 
   ngAfterViewInit() {
-    // Add a listener for when payment elements are added to DOM
     const observer = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
         if (mutation.type === 'childList' && document.getElementById('payment-element')) {
-          console.log('Payment element container detected in DOM');
           this.setupPaymentElement();
         }
       });
@@ -93,19 +105,35 @@ export class BookingComponent implements OnInit, AfterViewInit {
     observer.observe(document.body, { childList: true, subtree: true });
   }
 
+  private pastDateValidator() {
+    return (control: AbstractControl): ValidationErrors | null => {
+      if (!control.value) {
+        return null;
+      }
+
+      const selectedDate = new Date(control.value);
+      selectedDate.setHours(0, 0, 0, 0);
+
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      if (selectedDate < today) {
+        return { pastDate: true };
+      }
+
+      return null;
+    };
+  }
+
   private setupPaymentElement() {
     if (this.clientSecret && !this.paymentElementMounted) {
-      console.log('Setting up payment element with client secret');
       setTimeout(() => {
         const paymentElement = document.getElementById('payment-element');
         if (paymentElement) {
-          console.log('Payment element container found, mounting Stripe element');
           this.stripeElements = this.paymentService.setupStripeElements(this.clientSecret!, 'payment-element');
           this.paymentElementMounted = true;
-        } else {
-          console.error('Payment element container not found in DOM');
         }
-      }, 800); // Increased delay for better reliability
+      }, 800);
     }
   }
 
@@ -124,7 +152,131 @@ export class BookingComponent implements OnInit, AfterViewInit {
     });
   }
 
+  private loadExistingBookings(annonceId: string) {
+    this.http.get<any[]>(`http://localhost:8080/api/bookings/annonce/${annonceId}`).subscribe({
+      next: (bookings) => {
+        this.existingBookings = bookings.filter(booking => booking.status !== 'cancelled')
+          .map(booking => ({
+            startDate: new Date(booking.startDate),
+            endDate: new Date(booking.endDate)
+          }));
+      },
+      error: (error) => {
+        console.error('Error loading existing bookings:', error);
+      }
+    });
+  }
+
+  checkDateOverlap(): boolean {
+    if (!this.bookingForm.get('startDate')?.valid || !this.bookingForm.get('endDate')?.valid) {
+      return false;
+    }
+
+    const startDate = new Date(this.bookingForm.value.startDate);
+    const endDate = new Date(this.bookingForm.value.endDate);
+
+    // Set time to midnight for proper comparison
+    startDate.setHours(0, 0, 0, 0);
+    endDate.setHours(0, 0, 0, 0);
+
+    // Check if the selected dates overlap with any existing booking
+    const hasOverlap = this.existingBookings.some(booking => {
+      const bookingStartDate = new Date(booking.startDate);
+      const bookingEndDate = new Date(booking.endDate);
+
+      bookingStartDate.setHours(0, 0, 0, 0);
+      bookingEndDate.setHours(0, 0, 0, 0);
+
+      // Check if the date ranges overlap
+      return startDate < bookingEndDate && bookingStartDate < endDate;
+    });
+
+    if (hasOverlap) {
+      this.dateOverlapError = "The selected dates overlap with an existing booking. Please choose different dates.";
+      return true;
+    } else {
+      this.dateOverlapError = null;
+      return false;
+    }
+  }
+
+  checkDateAvailability() {
+    if (!this.bookingForm.get('startDate')?.valid || !this.bookingForm.get('endDate')?.valid) {
+      return;
+    }
+
+    const startDate = new Date(this.bookingForm.value.startDate);
+    const endDate = new Date(this.bookingForm.value.endDate);
+
+    // Check for past dates
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    if (startDate < today || endDate < today) {
+      return;
+    }
+
+    // Check if end date is before start date
+    if (endDate <= startDate) {
+      this.bookingForm.get('endDate')?.setErrors({ invalidRange: true });
+      return;
+    }
+
+    // Check for overlapping bookings
+    if (this.checkDateOverlap()) {
+      this.bookingForm.get('startDate')?.setErrors({ unavailable: true });
+      this.bookingForm.get('endDate')?.setErrors({ unavailable: true });
+      return;
+    }
+
+    this.calculatePriceAndDays();
+
+    // Server-side availability check
+    this.checkingAvailability = true;
+
+    const startISOString = startDate.toISOString();
+    const endISOString = endDate.toISOString();
+
+    this.http.get<{ available: boolean }>(
+      `http://localhost:8080/api/bookings/check-availability/${this.annonce?.id}?startDate=${startISOString}&endDate=${endISOString}`
+    ).subscribe({
+      next: (response) => {
+        this.checkingAvailability = false;
+        if (!response.available) {
+          this.error = 'Selected dates are not available. Please choose different dates.';
+          this.bookingForm.get('startDate')?.setErrors({ unavailable: true });
+          this.bookingForm.get('endDate')?.setErrors({ unavailable: true });
+        } else {
+          this.error = null;
+        }
+      },
+      error: (error) => {
+        this.checkingAvailability = false;
+        console.error('Error checking availability:', error);
+      }
+    });
+  }
+
   onDateChange() {
+    if (this.bookingForm.get('startDate')?.valid && this.bookingForm.get('endDate')?.valid && this.annonce) {
+      const start = new Date(this.bookingForm.value.startDate);
+      const end = new Date(this.bookingForm.value.endDate);
+
+      const timeDiff = end.getTime() - start.getTime();
+      this.numberOfDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
+
+      if (this.numberOfDays <= 0) {
+        this.bookingForm.get('endDate')?.setErrors({ invalidRange: true });
+        this.totalPrice = 0;
+        return;
+      }
+
+      this.calculatePriceAndDays();
+      this.checkDateOverlap();
+    }
+  }
+
+  calculatePriceAndDays() {
     if (this.bookingForm.get('startDate')?.valid && this.bookingForm.get('endDate')?.valid && this.annonce) {
       const start = new Date(this.bookingForm.value.startDate);
       const end = new Date(this.bookingForm.value.endDate);
@@ -163,11 +315,31 @@ export class BookingComponent implements OnInit, AfterViewInit {
         return;
       }
 
+      // Check for date overlaps again before proceeding
+      if (this.checkDateOverlap()) {
+        Swal.fire('Error', this.dateOverlapError || 'Selected dates are not available.', 'error');
+        return;
+      }
+
+      // Check availability one more time before proceeding
+      const startDate = new Date(this.bookingForm.value.startDate);
+      const endDate = new Date(this.bookingForm.value.endDate);
+
       this.paymentProcessing = true;
 
+      const startISOString = startDate.toISOString();
+      const endISOString = endDate.toISOString();
+
       try {
-        const startDate = new Date(this.bookingForm.value.startDate);
-        const endDate = new Date(this.bookingForm.value.endDate);
+        const availabilityResponse = await this.http.get<{ available: boolean }>(
+          `http://localhost:8080/api/bookings/check-availability/${this.annonce.id}?startDate=${startISOString}&endDate=${endISOString}`
+        ).toPromise();
+
+        if (!availabilityResponse?.available) {
+          this.paymentProcessing = false;
+          Swal.fire('Error', 'Selected dates are no longer available. Please choose different dates.', 'error');
+          return;
+        }
 
         const bookingRequest: BookingRequest = {
           annonceId: this.annonce.id,
@@ -179,15 +351,12 @@ export class BookingComponent implements OnInit, AfterViewInit {
           endDate: Math.floor(endDate.getTime() / 1000)
         };
 
-        console.log('Creating payment intent with request:', bookingRequest);
-
         const paymentResponse = await this.paymentService.createPaymentIntent(bookingRequest).toPromise();
 
         if (!paymentResponse || !paymentResponse.clientSecret) {
           throw new Error('Failed to get client secret from payment response');
         }
 
-        console.log('Payment intent created successfully with client secret');
         this.clientSecret = paymentResponse.clientSecret;
 
         Swal.fire({
@@ -202,9 +371,17 @@ export class BookingComponent implements OnInit, AfterViewInit {
             this.setupPaymentElement();
           }
         });
-      } catch (error) {
+      } catch (error: any) {
         console.error('Payment initialization error:', error);
-        Swal.fire('Error', 'Failed to initialize payment. Please try again.', 'error');
+        let errorMessage = 'Failed to initialize payment. Please try again.';
+
+        if (error.error && typeof error.error === 'object' && error.error.message) {
+          errorMessage = error.error.message;
+        } else if (error.message) {
+          errorMessage = error.message;
+        }
+
+        Swal.fire('Error', errorMessage, 'error');
         this.paymentProcessing = false;
       }
     } else {
@@ -213,9 +390,6 @@ export class BookingComponent implements OnInit, AfterViewInit {
   }
 
   async processPayment() {
-    console.log('Process payment clicked, elements:', this.stripeElements);
-    console.log('Client secret:', this.clientSecret ? 'Available' : 'Not available');
-
     if (!this.stripeElements || !this.clientSecret) {
       Swal.fire('Error', 'Payment not initialized properly', 'error');
       return;

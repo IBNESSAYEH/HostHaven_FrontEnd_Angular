@@ -55,12 +55,23 @@
                     type="date"
                     formControlName="startDate"
                     class="input input-bordered w-full"
+                    [class.input-error]="bookingForm.get('startDate')?.errors?.['unavailable'] || bookingForm.get('startDate')?.errors?.['pastDate']"
                     [min]="currentDate"
                     (change)="onDateChange()"
                   >
-                  @if (bookingForm.get('startDate')?.touched && bookingForm.get('startDate')?.invalid) {
+                  @if (bookingForm.get('startDate')?.touched && bookingForm.get('startDate')?.errors?.['required']) {
                     <label class="label">
                       <span class="label-text-alt text-error">Check-in date is required</span>
+                    </label>
+                  }
+                  @if (bookingForm.get('startDate')?.errors?.['pastDate']) {
+                    <label class="label">
+                      <span class="label-text-alt text-error">Check-in date cannot be in the past</span>
+                    </label>
+                  }
+                  @if (bookingForm.get('startDate')?.errors?.['unavailable']) {
+                    <label class="label">
+                      <span class="label-text-alt text-error">This date is unavailable</span>
                     </label>
                   }
                 </div>
@@ -73,6 +84,7 @@
                     type="date"
                     formControlName="endDate"
                     class="input input-bordered w-full"
+                    [class.input-error]="bookingForm.get('endDate')?.errors?.['unavailable'] || bookingForm.get('endDate')?.errors?.['invalidRange'] || bookingForm.get('endDate')?.errors?.['pastDate']"
                     [min]="bookingForm.get('startDate')?.value || currentDate"
                     (change)="onDateChange()"
                   >
@@ -86,8 +98,32 @@
                       <span class="label-text-alt text-error">Check-out date must be after check-in date</span>
                     </label>
                   }
+                  @if (bookingForm.get('endDate')?.errors?.['pastDate']) {
+                    <label class="label">
+                      <span class="label-text-alt text-error">Check-out date cannot be in the past</span>
+                    </label>
+                  }
+                  @if (bookingForm.get('endDate')?.errors?.['unavailable']) {
+                    <label class="label">
+                      <span class="label-text-alt text-error">This date is unavailable</span>
+                    </label>
+                  }
                 </div>
               </div>
+
+              @if (checkingAvailability) {
+                <div class="text-center py-2">
+                  <span class="loading loading-spinner loading-xs text-primary mr-2"></span>
+                  <span class="text-sm text-gray-500">Checking availability...</span>
+                </div>
+              }
+
+              @if (dateOverlapError) {
+                <div class="alert alert-error text-sm">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-5 w-5" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                  <span>{{dateOverlapError}}</span>
+                </div>
+              }
 
               <div class="form-control">
                 <label class="label">
@@ -132,7 +168,7 @@
                   <button
                     type="submit"
                     class="btn btn-primary w-full"
-                    [disabled]="bookingForm.invalid || paymentProcessing"
+                    [disabled]="bookingForm.invalid || paymentProcessing || checkingAvailability || dateOverlapError"
                   >
                     @if (paymentProcessing) {
                       <span class="loading loading-spinner loading-sm"></span>
@@ -229,19 +265,19 @@
               <div class="grid grid-cols-2 gap-3">
                 <div>
                   <p class="text-xs text-gray-500">Property Type</p>
-                  <p class="font-medium">{{annonce.type.name || 'N/A'}}</p>
+                  <p class="font-medium">{{annonce.type?.name || 'N/A'}}</p>
                 </div>
                 <div>
                   <p class="text-xs text-gray-500">Category</p>
-                  <p class="font-medium">{{annonce.category.name || 'N/A'}}</p>
+                  <p class="font-medium">{{annonce.category?.name || 'N/A'}}</p>
                 </div>
                 <div>
                   <p class="text-xs text-gray-500">Rooms</p>
-                  <p class="font-medium">{{annonce.caracteristiques.numberRooms || 'N/A'}}</p>
+                  <p class="font-medium">{{annonce.caracteristiques?.numberRooms || 'N/A'}}</p>
                 </div>
                 <div>
                   <p class="text-xs text-gray-500">Surface</p>
-                  <p class="font-medium">{{annonce.caracteristiques.surface || 'N/A'}}m²</p>
+                  <p class="font-medium">{{annonce.caracteristiques?.surface || 'N/A'}}m²</p>
                 </div>
               </div>
 
