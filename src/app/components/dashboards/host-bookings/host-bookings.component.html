@@ -1,0 +1,128 @@
+<div class="min-h-screen bg-base-200">
+  <div class="container mx-auto px-4 py-8">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+      <div>
+        <h1 class="text-2xl font-bold">Property Bookings</h1>
+        <p class="text-gray-600">Manage bookings for your listed properties</p>
+      </div>
+
+      <div class="tabs tabs-boxed bg-white">
+        <button class="tab" [class.tab-active]="statusFilter === 'all'" (click)="setStatusFilter('all')">All</button>
+        <button class="tab" [class.tab-active]="statusFilter === 'pending'" (click)="setStatusFilter('pending')">Pending</button>
+        <button class="tab" [class.tab-active]="statusFilter === 'confirmed'" (click)="setStatusFilter('confirmed')">Confirmed</button>
+        <button class="tab" [class.tab-active]="statusFilter === 'cancelled'" (click)="setStatusFilter('cancelled')">Cancelled</button>
+      </div>
+    </div>
+
+    @if (isLoading) {
+      <div class="flex justify-center items-center min-h-[300px]">
+        <span class="loading loading-spinner loading-lg"></span>
+      </div>
+    } @else if (error) {
+      <div class="alert alert-error max-w-2xl mx-auto">
+        <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+        <span>{{error}}</span>
+        <button class="btn btn-sm btn-outline ml-4" (click)="loadHostProperties()">Try Again</button>
+      </div>
+    } @else if (properties.length === 0) {
+      <div class="text-center py-16 bg-white rounded-lg shadow-sm">
+        <div class="mx-auto w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+          </svg>
+        </div>
+        <h3 class="text-lg font-semibold mb-2">No Properties Found</h3>
+        <p class="text-gray-500 mb-6">You don't have any properties listed yet.</p>
+        <a routerLink="/annonces/create" class="btn btn-primary">Create a Listing</a>
+      </div>
+    } @else if (filteredBookings.length === 0) {
+      <div class="text-center py-16 bg-white rounded-lg shadow-sm">
+        <div class="mx-auto w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+        </div>
+        <h3 class="text-lg font-semibold mb-2">No Bookings Found</h3>
+        <p class="text-gray-500 mb-6">
+          @if (statusFilter !== 'all') {
+            There are no {{ statusFilter }} bookings for your properties.
+          } @else {
+            Your properties don't have any bookings yet.
+          }
+        </p>
+        @if (statusFilter !== 'all') {
+          <button (click)="setStatusFilter('all')" class="btn btn-primary">View All Bookings</button>
+        }
+      </div>
+    } @else {
+      <div class="overflow-x-auto bg-white shadow-md rounded-lg">
+        <table class="table table-zebra w-full">
+          <thead>
+            <tr>
+              <th>Booking ID</th>
+              <th>Property</th>
+              <th>Guest</th>
+              <th>Dates</th>
+              <th>Amount</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (booking of filteredBookings; track booking.id) {
+              <tr>
+                <td class="font-mono text-xs">{{booking.id.substring(0, 8)}}</td>
+                <td>
+                  <div class="font-medium">{{getPropertyTitle(booking.annonceId)}}</div>
+                </td>
+                <td>
+                  <div class="font-medium">{{booking.user?.firstName}} {{booking.user?.lastName}}</div>
+                  <div class="text-xs text-gray-500">{{booking.user?.email}}</div>
+                </td>
+                <td>
+                  <div class="font-medium">{{formatDate(booking.startDate)}}</div>
+                  <div class="text-xs text-gray-500">
+                    {{calculateDuration(booking.startDate, booking.endDate)}} days
+                  </div>
+                </td>
+                <td>
+                  <div class="font-medium">${{booking.totalAmount.toFixed(2)}}</div>
+                </td>
+                <td>
+                  <span class="badge" [ngClass]="{
+                    'badge-success': booking.status === 'confirmed',
+                    'badge-warning': booking.status === 'pending',
+                    'badge-error': booking.status === 'cancelled'
+                  }">
+                    {{booking.status}}
+                  </span>
+                </td>
+                <td>
+                  <div class="dropdown dropdown-end">
+                    <div tabindex="0" role="button" class="btn btn-ghost btn-xs">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z" />
+                      </svg>
+                    </div>
+                    <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
+                      <li><a [routerLink]="['/annonces', booking.annonceId]">View Property</a></li>
+                      @if (booking.status === 'pending') {
+                        <li><a (click)="changeStatus(booking, 'confirmed')">Confirm Booking</a></li>
+                      }
+                      @if (booking.status !== 'cancelled') {
+                        <li><a (click)="changeStatus(booking, 'cancelled')" class="text-error">Cancel Booking</a></li>
+                      }
+                      @if (booking.status === 'cancelled') {
+                        <li><a (click)="changeStatus(booking, 'confirmed')" class="text-success">Restore Booking</a></li>
+                      }
+                    </ul>
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
+</div>
