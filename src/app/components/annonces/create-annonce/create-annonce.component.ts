@@ -38,15 +38,15 @@ export class CreateAnnonceComponent implements OnInit {
     return this.fb.group({
       title: ['', [Validators.required, Validators.minLength(5)]],
       description: ['', [Validators.required, Validators.minLength(20)]],
-      monthPrice: [null, [Validators.required, Validators.min(0)]],
+        monthPrice: [null, [Validators.required, Validators.min(0)]],
       weekPrice: [null, [Validators.min(0)]],
       dayPrice: [null, [Validators.min(0)]],
       adress: ['', [Validators.required]],
-      phone: ['', [Validators.required, Validators.pattern('^[0-9]{10}$')]],
+        phone: ['', [Validators.required, Validators.pattern('^[0-9]{10}$')]],
       email: ['', [Validators.required, Validators.email]],
       cityId: ['', Validators.required],
       categoryId: ['', Validators.required],
-      typeId: ['', Validators.required],
+       typeId: ['', Validators.required],
       imageLinks: this.fb.array([
         this.fb.control('', [Validators.pattern('https?://.+')])
       ]),
@@ -54,13 +54,13 @@ export class CreateAnnonceComponent implements OnInit {
         etage: [0],
         surface: [null, Validators.required],
         assenceur: [false],
-        balcon: [false],
+          balcon: [false],
         terrasse: [false],
         piscine: [false],
         jardin: [false],
-        parking: [false],
+         parking: [false],
         numberRooms: [null, Validators.required],
-        numberSale: [1, Validators.required],
+          numberSale: [1, Validators.required],
         numberSalleBain: [1, Validators.required]
       })
     });
@@ -78,7 +78,6 @@ export class CreateAnnonceComponent implements OnInit {
 
   removeImageLink(index: number) {
     this.imageLinksFormArray.removeAt(index);
-    // Ensure at least one input field is always available
     if (this.imageLinksFormArray.length === 0) {
       this.addImageLink();
     }
@@ -109,7 +108,7 @@ export class CreateAnnonceComponent implements OnInit {
     }).subscribe({
       next: (data) => {
         this.cities = data.cities;
-        this.types = data.types;
+          this.types = data.types;
         this.categories = data.categories;
         this.error = null;
       },
@@ -117,7 +116,7 @@ export class CreateAnnonceComponent implements OnInit {
         console.error('Error loading form data:', error);
         if (error.status === 401) {
           this.error = 'Your session has expired. Please login again.';
-          this.router.navigate(['/auth/login']);
+            this.router.navigate(['/auth/login']);
         } else {
           this.error = 'Failed to load necessary data. Please try again.';
         }
@@ -142,7 +141,6 @@ export class CreateAnnonceComponent implements OnInit {
 
       const formData = this.annonceForm.value;
 
-      // Filter out empty image links
       formData.imageLinks = formData.imageLinks.filter((url: string) => url.trim() !== '');
 
       this.annonceService.create(formData).subscribe({
