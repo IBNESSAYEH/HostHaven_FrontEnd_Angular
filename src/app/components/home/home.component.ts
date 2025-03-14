@@ -52,7 +52,7 @@ export class HomeComponent {
       queryParams.type = this.selectedType;
     }
 
-    if (this.selectedPriceRange) {
+     if (this.selectedPriceRange) {
        queryParams.priceRange = this.selectedPriceRange;
     }
 

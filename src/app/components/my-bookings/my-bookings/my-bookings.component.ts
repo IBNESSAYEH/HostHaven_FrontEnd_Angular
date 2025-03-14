@@ -16,7 +16,7 @@ import { of } from 'rxjs';
 })
 export class MyBookingsComponent implements OnInit {
   bookings: Booking[] = [];
-  isLoading = true;
+   isLoading = true;
   error: string | null = null;
 
   constructor(
@@ -42,24 +42,21 @@ export class MyBookingsComponent implements OnInit {
     this.http.get<Booking[]>(`http://localhost:8080/api/bookings/user/${userId}`)
       .pipe(
         catchError((error: HttpErrorResponse) => {
-          // Check if it's a parsing error but with status 200
           if (error.status === 200 && error.error instanceof SyntaxError) {
             console.warn('Received malformed JSON with status 200, showing empty bookings');
-            // Return an empty array as a fallback
             return of([]);
           }
-          // For other errors, rethrow
           throw error;
         })
       )
       .subscribe({
         next: (data) => {
           this.bookings = data;
-          this.isLoading = false;
+            this.isLoading = false;
         },
         error: (error) => {
           console.error('Error loading bookings:', error);
-          this.error = 'Failed to load bookings. Please try again later.';
+            this.error = 'Failed to load bookings. Please try again later.';
           this.isLoading = false;
         }
       });

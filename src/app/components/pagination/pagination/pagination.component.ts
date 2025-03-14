@@ -11,13 +11,13 @@ import { CommonModule } from '@angular/common';
 
 export class PaginationComponent {
   @Input() currentPage = 1;
-  @Input() totalPages = 1;
+   @Input() totalPages = 1;
   @Output() pageChange = new EventEmitter<number>();
 
   getPageRange(): number[] {
     const range = [];
     const maxVisiblePages = 5;
-    let start = Math.max(1, this.currentPage - 2);
+     let start = Math.max(1, this.currentPage - 2);
     let end = Math.min(this.totalPages, start + maxVisiblePages - 1);
 
     if (end - start + 1 < maxVisiblePages) {

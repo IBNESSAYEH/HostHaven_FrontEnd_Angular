@@ -6,9 +6,8 @@ import { catchError, throwError } from 'rxjs';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthService);
-  const router = inject(Router);
+   const router = inject(Router);
 
-  // Skip authentication for auth endpoints
   if (req.url.includes('/api/auth/')) {
     return next(req);
   }
@@ -19,7 +18,6 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     return throwError(() => new Error('No token found'));
   }
 
-  // Clean the token
   const cleanToken = token.trim();
 
   const authReq = req.clone({
@@ -32,7 +30,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     catchError(error => {
       if (error.status === 401) {
         console.log('Token expired or invalid');
-        authService.logout();
+          authService.logout();
         router.navigate(['/auth/login']);
       }
       return throwError(() => error);
