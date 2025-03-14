@@ -20,33 +20,35 @@ import { BookingRequest } from '../../models/booking';
 export class BookingComponent implements OnInit, AfterViewInit {
   annonce: Annonce | null = null;
   bookingForm: FormGroup;
-  isLoading = true;
+    isLoading = true;
   error: string | null = null;
   dateOverlapError: string | null = null;
-  totalPrice = 0;
+    totalPrice = 0;
   numberOfDays = 0;
   paymentProcessing = false;
   stripeElements: any;
-  clientSecret: string | null = null;
+     clientSecret: string | null = null;
   currentDate: string;
   paymentElementMounted = false;
   processingPayment = false;
+
   checkingAvailability = false;
   existingBookings: any[] = [];
 
   constructor(
     private fb: FormBuilder,
-    private route: ActivatedRoute,
+     private route: ActivatedRoute,
     private router: Router,
     private annonceService: AnnonceService,
-    private paymentService: PaymentService,
+
+     private paymentService: PaymentService,
     private authService: AuthService,
     private http: HttpClient
   ) {
     this.bookingForm = this.fb.group({
       startDate: ['', [Validators.required, this.pastDateValidator()]],
       endDate: ['', [Validators.required, this.pastDateValidator()]],
-      name: ['', Validators.required],
+       name: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       phone: ['', Validators.required]
     });
@@ -58,7 +60,7 @@ export class BookingComponent implements OnInit, AfterViewInit {
     if (!this.authService.isAuthenticated()) {
       Swal.fire({
         title: 'Authentication Required',
-        text: 'Please log in to book a property',
+         text: 'Please log in to book a property',
         icon: 'warning',
         confirmButtonText: 'Go to Login'
       }).then(() => {
@@ -175,11 +177,9 @@ export class BookingComponent implements OnInit, AfterViewInit {
     const startDate = new Date(this.bookingForm.value.startDate);
     const endDate = new Date(this.bookingForm.value.endDate);
 
-    // Set time to midnight for proper comparison
     startDate.setHours(0, 0, 0, 0);
     endDate.setHours(0, 0, 0, 0);
 
-    // Check if the selected dates overlap with any existing booking
     const hasOverlap = this.existingBookings.some(booking => {
       const bookingStartDate = new Date(booking.startDate);
       const bookingEndDate = new Date(booking.endDate);
@@ -187,7 +187,6 @@ export class BookingComponent implements OnInit, AfterViewInit {
       bookingStartDate.setHours(0, 0, 0, 0);
       bookingEndDate.setHours(0, 0, 0, 0);
 
-      // Check if the date ranges overlap
       return startDate < bookingEndDate && bookingStartDate < endDate;
     });
 
@@ -208,7 +207,6 @@ export class BookingComponent implements OnInit, AfterViewInit {
     const startDate = new Date(this.bookingForm.value.startDate);
     const endDate = new Date(this.bookingForm.value.endDate);
 
-    // Check for past dates
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
@@ -216,13 +214,11 @@ export class BookingComponent implements OnInit, AfterViewInit {
       return;
     }
 
-    // Check if end date is before start date
     if (endDate <= startDate) {
       this.bookingForm.get('endDate')?.setErrors({ invalidRange: true });
       return;
     }
 
-    // Check for overlapping bookings
     if (this.checkDateOverlap()) {
       this.bookingForm.get('startDate')?.setErrors({ unavailable: true });
       this.bookingForm.get('endDate')?.setErrors({ unavailable: true });
@@ -231,7 +227,6 @@ export class BookingComponent implements OnInit, AfterViewInit {
 
     this.calculatePriceAndDays();
 
-    // Server-side availability check
     this.checkingAvailability = true;
 
     const startISOString = startDate.toISOString();
@@ -315,13 +310,11 @@ export class BookingComponent implements OnInit, AfterViewInit {
         return;
       }
 
-      // Check for date overlaps again before proceeding
       if (this.checkDateOverlap()) {
         Swal.fire('Error', this.dateOverlapError || 'Selected dates are not available.', 'error');
         return;
       }
 
-      // Check availability one more time before proceeding
       const startDate = new Date(this.bookingForm.value.startDate);
       const endDate = new Date(this.bookingForm.value.endDate);
 

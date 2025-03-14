@@ -14,12 +14,10 @@
     <div class="container mx-auto px-4 py-8">
       <div class="flex flex-col lg:flex-row gap-8">
 
-        <!-- Booking Form Section -->
         <div class="w-full lg:w-7/12">
           <div class="bg-white rounded-lg shadow-md p-6 mb-6">
             <h2 class="text-2xl font-bold mb-6">Book Your Stay</h2>
 
-            <!-- Property Summary -->
             <div class="flex items-start gap-4 mb-6 pb-6 border-b">
               <div class="w-24 h-24 rounded-lg overflow-hidden flex-shrink-0">
                 <img
@@ -44,7 +42,6 @@
               </div>
             </div>
 
-            <!-- Booking Form -->
             <form [formGroup]="bookingForm" (ngSubmit)="onSubmit()" class="space-y-4">
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div class="form-control">
@@ -180,7 +177,6 @@
             </form>
           </div>
 
-          <!-- Stripe Payment Form -->
           @if (clientSecret) {
             <div id="payment-section" class="bg-white rounded-lg shadow-md p-6">
               <h2 class="text-2xl font-bold mb-6">Payment Details</h2>
@@ -198,12 +194,10 @@
                 </div>
               </div>
 
-              <!-- Stripe Element Container -->
               <div class="mb-6">
                 <div id="payment-element" class="p-4 border rounded-md min-h-[200px]"></div>
               </div>
 
-              <!-- Payment Button -->
               <button
                 type="button"
                 class="btn btn-primary w-full"
@@ -223,12 +217,10 @@
           }
         </div>
 
-        <!-- Booking Summary Section -->
         <div class="w-full lg:w-5/12">
           <div class="bg-white rounded-lg shadow-md p-6 sticky top-24">
             <h2 class="text-xl font-bold mb-4">Booking Summary</h2>
 
-            <!-- Price Details -->
             <div class="space-y-3 pb-4 border-b">
               <div class="flex justify-between items-center">
                 <span class="text-gray-600">Price Details</span>
@@ -258,7 +250,6 @@
               </div>
             </div>
 
-            <!-- Property Details -->
             <div class="pt-4 space-y-3">
               <h3 class="font-semibold">Property Details</h3>
 
@@ -336,7 +327,6 @@
               }
             </div>
 
-            <!-- Host Info -->
             @if (annonce.user) {
               <div class="mt-6 pt-4 border-t">
                 <h3 class="font-semibold">Host Information</h3>
