@@ -1,0 +1,23 @@
+<div class="flex justify-center mt-8">
+  <div class="join">
+    <button class="join-item btn"
+            [disabled]="currentPage === 1"
+            (click)="onPageChange(currentPage - 1)">
+      «
+    </button>
+
+    @for (page of getPageRange(); track page) {
+      <button class="join-item btn"
+              [class.btn-active]="currentPage === page"
+              (click)="onPageChange(page)">
+        {{page}}
+      </button>
+    }
+
+    <button class="join-item btn"
+            [disabled]="currentPage === totalPages"
+            (click)="onPageChange(currentPage + 1)">
+      »
+    </button>
+  </div>
+</div>

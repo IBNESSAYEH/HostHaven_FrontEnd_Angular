@@ -1,0 +1,349 @@
+<div class="min-h-screen bg-gray-50">
+  @if (isLoading) {
+    <div class="flex justify-center items-center min-h-[400px]">
+      <div class="flex flex-col items-center">
+        <span class="loading loading-spinner loading-lg text-primary"></span>
+        <p class="mt-4 text-gray-500">Loading property details...</p>
+      </div>
+    </div>
+  } @else if (error) {
+    <div class="alert alert-error max-w-2xl mx-auto mt-8">
+      <span>{{error}}</span>
+    </div>
+  } @else if (annonce) {
+    <div class="container mx-auto px-4 py-8">
+      <div class="flex flex-col lg:flex-row gap-8">
+
+        <div class="w-full lg:w-7/12">
+          <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+            <h2 class="text-2xl font-bold mb-6">Book Your Stay</h2>
+
+            <div class="flex items-start gap-4 mb-6 pb-6 border-b">
+              <div class="w-24 h-24 rounded-lg overflow-hidden flex-shrink-0">
+                <img
+                  [src]="getPropertyImageUrl()"
+                  alt="Property Image"
+                  class="w-full h-full object-cover"
+                >
+              </div>
+              <div>
+                <h3 class="text-lg font-semibold">{{annonce.title}}</h3>
+                <div class="flex items-center text-sm text-gray-600 mt-1">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                  <span>{{annonce.city.name}}, {{annonce.adress}}</span>
+                </div>
+                <div class="flex gap-2 mt-2">
+                  <span class="badge badge-primary">{{annonce.type.name}}</span>
+                  <span class="badge badge-secondary">{{annonce.category.name}}</span>
+                </div>
+              </div>
+            </div>
+
+            <form [formGroup]="bookingForm" (ngSubmit)="onSubmit()" class="space-y-4">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="form-control">
+                  <label class="label">
+                    <span class="label-text font-medium">Check-in Date</span>
+                  </label>
+                  <input
+                    type="date"
+                    formControlName="startDate"
+                    class="input input-bordered w-full"
+                    [class.input-error]="bookingForm.get('startDate')?.errors?.['unavailable'] || bookingForm.get('startDate')?.errors?.['pastDate']"
+                    [min]="currentDate"
+                    (change)="onDateChange()"
+                  >
+                  @if (bookingForm.get('startDate')?.touched && bookingForm.get('startDate')?.errors?.['required']) {
+                    <label class="label">
+                      <span class="label-text-alt text-error">Check-in date is required</span>
+                    </label>
+                  }
+                  @if (bookingForm.get('startDate')?.errors?.['pastDate']) {
+                    <label class="label">
+                      <span class="label-text-alt text-error">Check-in date cannot be in the past</span>
+                    </label>
+                  }
+                  @if (bookingForm.get('startDate')?.errors?.['unavailable']) {
+                    <label class="label">
+                      <span class="label-text-alt text-error">This date is unavailable</span>
+                    </label>
+                  }
+                </div>
+
+                <div class="form-control">
+                  <label class="label">
+                    <span class="label-text font-medium">Check-out Date</span>
+                  </label>
+                  <input
+                    type="date"
+                    formControlName="endDate"
+                    class="input input-bordered w-full"
+                    [class.input-error]="bookingForm.get('endDate')?.errors?.['unavailable'] || bookingForm.get('endDate')?.errors?.['invalidRange'] || bookingForm.get('endDate')?.errors?.['pastDate']"
+                    [min]="bookingForm.get('startDate')?.value || currentDate"
+                    (change)="onDateChange()"
+                  >
+                  @if (bookingForm.get('endDate')?.touched && bookingForm.get('endDate')?.errors?.['required']) {
+                    <label class="label">
+                      <span class="label-text-alt text-error">Check-out date is required</span>
+                    </label>
+                  }
+                  @if (bookingForm.get('endDate')?.errors?.['invalidRange']) {
+                    <label class="label">
+                      <span class="label-text-alt text-error">Check-out date must be after check-in date</span>
+                    </label>
+                  }
+                  @if (bookingForm.get('endDate')?.errors?.['pastDate']) {
+                    <label class="label">
+                      <span class="label-text-alt text-error">Check-out date cannot be in the past</span>
+                    </label>
+                  }
+                  @if (bookingForm.get('endDate')?.errors?.['unavailable']) {
+                    <label class="label">
+                      <span class="label-text-alt text-error">This date is unavailable</span>
+                    </label>
+                  }
+                </div>
+              </div>
+
+              @if (checkingAvailability) {
+                <div class="text-center py-2">
+                  <span class="loading loading-spinner loading-xs text-primary mr-2"></span>
+                  <span class="text-sm text-gray-500">Checking availability...</span>
+                </div>
+              }
+
+              @if (dateOverlapError) {
+                <div class="alert alert-error text-sm">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-5 w-5" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                  <span>{{dateOverlapError}}</span>
+                </div>
+              }
+
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text font-medium">Full Name</span>
+                </label>
+                <input type="text" formControlName="name" class="input input-bordered w-full" placeholder="Your full name">
+                @if (bookingForm.get('name')?.touched && bookingForm.get('name')?.invalid) {
+                  <label class="label">
+                    <span class="label-text-alt text-error">Full name is required</span>
+                  </label>
+                }
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="form-control">
+                  <label class="label">
+                    <span class="label-text font-medium">Email</span>
+                  </label>
+                  <input type="email" formControlName="email" class="input input-bordered w-full" placeholder="your.email@example.com">
+                  @if (bookingForm.get('email')?.touched && bookingForm.get('email')?.invalid) {
+                    <label class="label">
+                      <span class="label-text-alt text-error">Valid email is required</span>
+                    </label>
+                  }
+                </div>
+
+                <div class="form-control">
+                  <label class="label">
+                    <span class="label-text font-medium">Phone</span>
+                  </label>
+                  <input type="tel" formControlName="phone" class="input input-bordered w-full" placeholder="Your phone number">
+                  @if (bookingForm.get('phone')?.touched && bookingForm.get('phone')?.invalid) {
+                    <label class="label">
+                      <span class="label-text-alt text-error">Phone number is required</span>
+                    </label>
+                  }
+                </div>
+              </div>
+
+              @if (!clientSecret) {
+                <div class="mt-6">
+                  <button
+                    type="submit"
+                    class="btn btn-primary w-full"
+                    [disabled]="bookingForm.invalid || paymentProcessing || checkingAvailability || dateOverlapError"
+                  >
+                    @if (paymentProcessing) {
+                      <span class="loading loading-spinner loading-sm"></span>
+                    }
+                    Continue to Payment
+                  </button>
+                </div>
+              }
+            </form>
+          </div>
+
+          @if (clientSecret) {
+            <div id="payment-section" class="bg-white rounded-lg shadow-md p-6">
+              <h2 class="text-2xl font-bold mb-6">Payment Details</h2>
+
+              <div class="mb-6 pb-6 border-b">
+                <div class="grid grid-cols-2 gap-4">
+                  <div>
+                    <p class="text-sm text-gray-500">Total Amount</p>
+                    <p class="text-2xl font-bold">${{(totalPrice || 0).toFixed(2)}}</p>
+                  </div>
+                  <div>
+                    <p class="text-sm text-gray-500">Duration</p>
+                    <p class="text-2xl font-bold">{{numberOfDays}} days</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="mb-6">
+                <div id="payment-element" class="p-4 border rounded-md min-h-[200px]"></div>
+              </div>
+
+              <button
+                type="button"
+                class="btn btn-primary w-full"
+                (click)="processPayment()"
+                [disabled]="processingPayment"
+              >
+                @if (processingPayment) {
+                  <span class="loading loading-spinner loading-sm"></span>
+                }
+                Complete Payment
+              </button>
+
+              <p class="text-xs text-center mt-4 text-gray-500">
+                Your payment is processed securely through Stripe. We do not store your card details.
+              </p>
+            </div>
+          }
+        </div>
+
+        <div class="w-full lg:w-5/12">
+          <div class="bg-white rounded-lg shadow-md p-6 sticky top-24">
+            <h2 class="text-xl font-bold mb-4">Booking Summary</h2>
+
+            <div class="space-y-3 pb-4 border-b">
+              <div class="flex justify-between items-center">
+                <span class="text-gray-600">Price Details</span>
+                <span class="font-medium">Amount</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span>Base Rate</span>
+                <span>
+                  @if (numberOfDays >= 30 && annonce.monthPrice) {
+                    ${{annonce.monthPrice}}/month
+                  } @else if (numberOfDays >= 7 && annonce.weekPrice) {
+                    ${{annonce.weekPrice}}/week
+                  } @else if (annonce.dayPrice) {
+                    ${{annonce.dayPrice}}/day
+                  } @else {
+                    $0/day
+                  }
+                </span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span>Duration</span>
+                <span>{{numberOfDays}} days</span>
+              </div>
+              <div class="flex justify-between items-center font-semibold">
+                <span>Total</span>
+                <span>${{(totalPrice || 0).toFixed(2)}}</span>
+              </div>
+            </div>
+
+            <div class="pt-4 space-y-3">
+              <h3 class="font-semibold">Property Details</h3>
+
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <p class="text-xs text-gray-500">Property Type</p>
+                  <p class="font-medium">{{annonce.type?.name || 'N/A'}}</p>
+                </div>
+                <div>
+                  <p class="text-xs text-gray-500">Category</p>
+                  <p class="font-medium">{{annonce.category?.name || 'N/A'}}</p>
+                </div>
+                <div>
+                  <p class="text-xs text-gray-500">Rooms</p>
+                  <p class="font-medium">{{annonce.caracteristiques?.numberRooms || 'N/A'}}</p>
+                </div>
+                <div>
+                  <p class="text-xs text-gray-500">Surface</p>
+                  <p class="font-medium">{{annonce.caracteristiques?.surface || 'N/A'}}m²</p>
+                </div>
+              </div>
+
+              @if (annonce.caracteristiques) {
+                <h3 class="font-semibold mt-4">Amenities</h3>
+                <div class="grid grid-cols-2 gap-2 mt-2">
+                  @if (annonce.caracteristiques.assenceur) {
+                    <div class="flex items-center gap-2">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-green-500" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                      </svg>
+                      <span class="text-sm">Elevator</span>
+                    </div>
+                  }
+                  @if (annonce.caracteristiques.balcon) {
+                    <div class="flex items-center gap-2">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-green-500" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                      </svg>
+                      <span class="text-sm">Balcony</span>
+                    </div>
+                  }
+                  @if (annonce.caracteristiques.terrasse) {
+                    <div class="flex items-center gap-2">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-green-500" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                      </svg>
+                      <span class="text-sm">Terrace</span>
+                    </div>
+                  }
+                  @if (annonce.caracteristiques.parking) {
+                    <div class="flex items-center gap-2">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-green-500" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                      </svg>
+                      <span class="text-sm">Parking</span>
+                    </div>
+                  }
+                  @if (annonce.caracteristiques.piscine) {
+                    <div class="flex items-center gap-2">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-green-500" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                      </svg>
+                      <span class="text-sm">Pool</span>
+                    </div>
+                  }
+                  @if (annonce.caracteristiques.jardin) {
+                    <div class="flex items-center gap-2">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-green-500" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                      </svg>
+                      <span class="text-sm">Garden</span>
+                    </div>
+                  }
+                </div>
+              }
+            </div>
+
+            @if (annonce.user) {
+              <div class="mt-6 pt-4 border-t">
+                <h3 class="font-semibold">Host Information</h3>
+                <div class="flex items-center gap-3 mt-3">
+                  <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold">
+                    {{annonce.user.firstName[0] || 'H'}}
+                  </div>
+                  <div>
+                    <p class="font-medium">{{annonce.user.firstName || 'Host'}} {{annonce.user.lastName || ''}}</p>
+                    <p class="text-xs text-gray-500">Property Owner</p>
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+</div>

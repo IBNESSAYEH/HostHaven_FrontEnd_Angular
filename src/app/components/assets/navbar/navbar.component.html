@@ -1,0 +1,134 @@
+<div class="bg-gradient-to-r from-blue-900 to-blue-800 text-white">
+  <div class="hidden sm:block py-2 text-center text-sm bg-blue-800 bg-opacity-50">
+    <span>🎉 Special offer: Get 10% off your first booking with code <span class="font-bold">HAVEN10</span></span>
+  </div>
+
+  <div class="navbar container mx-auto px-4">
+    <div class="navbar-start">
+      <a routerLink="/" class="flex items-center gap-2">
+        <div class="w-10 h-10 rounded-full bg-white text-blue-900 flex items-center justify-center font-bold text-xl">
+          <img src="assets/images/HostahavenLogoe-removebg-preview.png" alt="">
+        </div>
+        <span class="text-xl font-bold tracking-tight hidden sm:inline-block">HostHaven</span>
+      </a>
+    </div>
+
+    <div class="navbar-center hidden lg:flex">
+      <ul class="menu menu-horizontal gap-1 p-0">
+        <li>
+          <a routerLink="/" routerLinkActive="bg-blue-700" class="font-medium rounded-lg hover:bg-blue-700">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+              <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
+            </svg>
+            Home
+          </a>
+        </li>
+        <li>
+          <a routerLink="/annonce-list" routerLinkActive="bg-blue-700" class="font-medium rounded-lg hover:bg-blue-700">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+              <path d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM2 11a2 2 0 012-2h12a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4z" />
+            </svg>
+            Explore
+          </a>
+        </li>
+        @if (isAuthenticated()) {
+          <li>
+            <a routerLink="/annonces/create" routerLinkActive="bg-blue-700" class="font-medium rounded-lg hover:bg-blue-700">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
+              </svg>
+              List Property
+            </a>
+          </li>
+        }
+        <li>
+          <div class="dropdown dropdown-hover">
+            <div tabindex="0" role="button" class="font-medium rounded-lg hover:bg-blue-700 flex items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" />
+              </svg>
+              Help
+              <svg class="h-4 w-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </div>
+            <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-white text-gray-800 rounded-box w-56 z-50">
+              <li><a href="#">FAQ</a></li>
+              <li><a href="#">Contact Support</a></li>
+              <li><a href="#">How It Works</a></li>
+              <li><a href="#">Safety Guidelines</a></li>
+            </ul>
+          </div>
+        </li>
+        <li>
+          <a routerLink="/ebanky-news" routerLinkActive="bg-blue-700" class="font-medium rounded-lg hover:bg-blue-700">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M2 5a2 2 0 012-2h8a2 2 0 012 2v10a2 2 0 002 2H4a2 2 0 01-2-2V5zm3 1h6v4H5V6zm6 6H5v2h6v-2z" clip-rule="evenodd"/>
+              <path d="M15 7h1a2 2 0 012 2v5.5a1.5 1.5 0 01-3 0V7z"/>
+            </svg>
+            News
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <div class="navbar-end">
+      @if (isAuthenticated()) {
+        <div class="dropdown dropdown-end">
+          <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
+            <div class="w-10 rounded-full bg-blue-200 flex items-center justify-center text-blue-900 font-bold">
+              <!-- {{ getUserInitials() }} -->
+              <img src="assets/images/876-1697015225.jpg" alt="">
+            </div>
+          </div>
+          <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-white text-gray-800 rounded-box w-52">
+            <li class="p-2 text-sm text-gray-500">
+              <span>{{ getUserName() }}</span>
+            </li>
+            <div class="divider my-0"></div>
+
+            <li><a routerLink="/profile">profile</a></li>
+            @if(isAuthenticated()) {
+              @if(userRole === 'ADMIN') {
+                <li><a routerLink="/dashboard/admin">Admin Dashboard</a></li>
+              } @else if(userRole === 'HOST' || userRole === 'SUPER_HOST') {
+                <li><a routerLink="/dashboard/host">Host Dashboard</a></li>
+              }
+            }
+            <li><a routerLink="/ebanky-news">News</a></li>
+            <div class="divider my-0"></div>
+            <li><a class="text-error" (click)="logout()">Logout</a></li>
+          </ul>
+        </div>
+      } @else {
+        <a routerLink="/auth/login" class="btn btn-sm btn-outline bg-white text-blue-800 border-white hover:bg-blue-100 hover:border-blue-100 mr-2">
+          Login
+        </a>
+        <a routerLink="/auth/register" class="btn btn-sm bg-white text-blue-800 hover:bg-blue-100">
+          Register
+        </a>
+      }
+
+      <div class="dropdown dropdown-end ml-2 lg:hidden">
+        <label tabindex="0" class="btn btn-ghost btn-circle">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </label>
+        <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-white text-gray-800 rounded-box w-52">
+          <li><a routerLink="/">Home</a></li>
+          <li><a routerLink="/annonce-list">Explore</a></li>
+          @if (isAuthenticated()) {
+            <li><a routerLink="/annonces/create">List Property</a></li>
+            <li><a routerLink="/dashboard">Dashboard</a></li>
+            <div class="divider my-0"></div>
+            <li><a class="text-error" (click)="logout()">Logout</a></li>
+          } @else {
+            <li><a routerLink="/auth/login">Login</a></li>
+            <li><a routerLink="/auth/register">Register</a></li>
+          }
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

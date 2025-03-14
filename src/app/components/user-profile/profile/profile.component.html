@@ -1,0 +1,172 @@
+<div class="min-h-screen bg-base-200 py-8">
+  <div class="container mx-auto px-4">
+    <div class="max-w-4xl mx-auto">
+      <div class="text-center mb-8">
+        <div class="avatar mb-4">
+          <div class="w-24 h-24 rounded-full bg-primary flex items-center justify-center text-3xl font-bold text-white">
+            {{ getUserInitials() }}
+          </div>
+        </div>
+        <h1 class="text-2xl font-bold">{{ getCurrentUserName() }}</h1>
+        <p class="text-gray-600">Member since {{ formatDate(userInfo?.inscriptionDate) }}</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+        <div class="md:col-span-4">
+          <div class="card bg-base-100 shadow-xl">
+            <div class="card-body">
+              <h2 class="card-title mb-4">Account Details</h2>
+              <div class="space-y-3">
+                <div>
+                  <label class="text-sm text-gray-500">Email</label>
+                  <p class="font-medium">{{ userInfo?.email }}</p>
+                </div>
+                <div>
+                  <label class="text-sm text-gray-500">Phone</label>
+                  <p class="font-medium">{{ userInfo?.phone }}</p>
+                </div>
+                <div>
+                  <label class="text-sm text-gray-500">Role</label>
+                  <div class="badge badge-primary">{{ userInfo?.role }}</div>
+                </div>
+                <div>
+                  <label class="text-sm text-gray-500">Email Verification</label>
+                  @if (userInfo?.emailVerificationStatus) {
+                    <div class="badge badge-success">Verified</div>
+                  } @else {
+                    <div class="badge badge-warning">Pending</div>
+                  }
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="md:col-span-8">
+          <div class="card bg-base-100 shadow-xl">
+            <div class="card-body">
+              <h2 class="card-title mb-4">Edit Profile</h2>
+
+              @if (error) {
+                <div class="alert alert-error mb-4">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                  <span>{{ error }}</span>
+                </div>
+              }
+              @if (successMessage) {
+                <div class="alert alert-success mb-4">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                  <span>{{ successMessage }}</span>
+                </div>
+              }
+
+              <form [formGroup]="profileForm" (ngSubmit)="onSubmit()" class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div class="form-control">
+                    <label class="label">
+                      <span class="label-text">First Name</span>
+                    </label>
+                    <input type="text" formControlName="firstName"
+                           class="input input-bordered"
+                           [class.input-error]="isFieldInvalid('firstName')" />
+                    @if (isFieldInvalid('firstName')) {
+                      <label class="label">
+                        <span class="label-text-alt text-error">{{ getErrorMessage('firstName') }}</span>
+                      </label>
+                    }
+                  </div>
+
+                  <div class="form-control">
+                    <label class="label">
+                      <span class="label-text">Last Name</span>
+                    </label>
+                    <input type="text" formControlName="lastName"
+                           class="input input-bordered"
+                           [class.input-error]="isFieldInvalid('lastName')" />
+                    @if (isFieldInvalid('lastName')) {
+                      <label class="label">
+                        <span class="label-text-alt text-error">{{ getErrorMessage('lastName') }}</span>
+                      </label>
+                    }
+                  </div>
+                </div>
+
+                <div class="form-control">
+                  <label class="label">
+                    <span class="label-text">Phone</span>
+                  </label>
+                  <input type="tel" formControlName="phone"
+                         class="input input-bordered"
+                         [class.input-error]="isFieldInvalid('phone')" />
+                  @if (isFieldInvalid('phone')) {
+                    <label class="label">
+                      <span class="label-text-alt text-error">{{ getErrorMessage('phone') }}</span>
+                    </label>
+                  }
+                </div>
+
+                <div class="form-control mt-6">
+                  <button type="submit"
+                          class="btn btn-primary w-full"
+                          [disabled]="!profileForm.valid || isLoading">
+                    @if (isLoading) {
+                      <span class="loading loading-spinner"></span>
+                    }
+                    Save Changes
+                  </button>
+                </div>
+              </form>
+
+              <div class="divider"></div>
+              <h3 class="font-semibold mb-4">Change Password</h3>
+              <form [formGroup]="passwordForm" (ngSubmit)="onPasswordChange()" class="space-y-4">
+                <div class="form-control">
+                  <label class="label">
+                    <span class="label-text">Current Password</span>
+                  </label>
+                  <input type="password" formControlName="currentPassword"
+                         class="input input-bordered"
+                         [class.input-error]="isFieldInvalid('currentPassword', passwordForm)" />
+                </div>
+
+                <div class="form-control">
+                  <label class="label">
+                    <span class="label-text">New Password</span>
+                  </label>
+                  <input type="password" formControlName="newPassword"
+                         class="input input-bordered"
+                         [class.input-error]="isFieldInvalid('newPassword', passwordForm)" />
+                </div>
+
+                <div class="form-control">
+                  <label class="label">
+                    <span class="label-text">Confirm New Password</span>
+                  </label>
+                  <input type="password" formControlName="confirmPassword"
+                         class="input input-bordered"
+                         [class.input-error]="isFieldInvalid('confirmPassword', passwordForm)" />
+                  @if (passwordForm.errors?.['passwordMismatch']) {
+                    <label class="label">
+                      <span class="label-text-alt text-error">Passwords do not match</span>
+                    </label>
+                  }
+                </div>
+
+                <div class="form-control mt-6">
+                  <button type="submit"
+                          class="btn btn-secondary w-full"
+                          [disabled]="!passwordForm.valid || isLoading">
+                    @if (isLoading) {
+                      <span class="loading loading-spinner"></span>
+                    }
+                    Change Password
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

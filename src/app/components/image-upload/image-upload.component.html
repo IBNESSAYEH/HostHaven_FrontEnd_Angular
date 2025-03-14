@@ -1,0 +1,71 @@
+<div class="image-upload-container">
+  <div class="upload-section">
+    <div class="file-input-wrapper">
+      <label for="file-upload" class="btn btn-outline btn-primary">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+        </svg>
+        Select Images
+      </label>
+      <input type="file" id="file-upload" (change)="onFileSelect($event)" multiple accept="image/*" class="hidden-input" style="display: none;">
+      <span class="text-sm text-gray-500 ml-2">Select multiple property images</span>
+    </div>
+
+    @if (uploadError) {
+      <div class="alert alert-error mt-4">
+        <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+        <span>{{ uploadError }}</span>
+      </div>
+    }
+
+    @if (previewUrls.length > 0) {
+      <div class="preview-container mt-4">
+        <h4 class="text-lg font-semibold mb-2">Selected Images:</h4>
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+          @for (url of previewUrls; track url; let i = $index) {
+            <div class="preview-item">
+              <div class="image-preview relative">
+                <img [src]="url" alt="Image preview" class="w-full h-24 object-cover rounded">
+                <button type="button" class="remove-btn absolute top-1 right-1 bg-red-500 text-white rounded-full p-1" (click)="removeImage(i)">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          }
+        </div>
+
+        <div class="mt-4">
+          <button
+            type="button"
+            class="btn btn-primary"
+            (click)="uploadImages()"
+            [disabled]="isUploading">
+            @if (isUploading) {
+              <span class="loading loading-spinner loading-sm"></span>
+              Uploading...
+            } @else {
+              Upload Images
+            }
+          </button>
+          <button type="button" class="btn btn-outline ml-2" (click)="resetUpload()">Reset</button>
+        </div>
+      </div>
+    }
+
+    @if (isUploading) {
+      <div class="mt-4">
+        <p class="text-sm text-gray-600 mb-1">Upload Progress: {{uploadProgress}}%</p>
+        <progress class="progress progress-primary w-full" [value]="uploadProgress" max="100"></progress>
+      </div>
+    }
+
+    @if (uploadSuccess) {
+      <div class="alert alert-success mt-4">
+        <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+        <span>Images uploaded successfully!</span>
+      </div>
+    }
+  </div>
+</div>
