@@ -13,10 +13,10 @@ import { FormsModule } from '@angular/forms';
 export class ImageUploadComponent {
   selectedFiles: File[] = [];
   previewUrls: string[] = [];
-  uploadProgress = 0;
+   uploadProgress = 0;
   uploadSuccess = false;
   uploadError = '';
-  uploadedImageUrls: string[] = [];
+   uploadedImageUrls: string[] = [];
   isUploading = false;
 
   constructor(private http: HttpClient) {}
@@ -31,7 +31,7 @@ export class ImageUploadComponent {
         const file = files[i];
         if (this.isImageFile(file)) {
           this.selectedFiles.push(file);
-          this.createImagePreview(file);
+           this.createImagePreview(file);
         } else {
           this.uploadError = 'Please select only image files.';
         }
@@ -62,9 +62,9 @@ export class ImageUploadComponent {
       return;
     }
 
-    this.isUploading = true;
+     this.isUploading = true;
     this.uploadProgress = 0;
-    this.uploadSuccess = false;
+      this.uploadSuccess = false;
     this.uploadError = '';
     this.uploadedImageUrls = [];
 
@@ -82,7 +82,7 @@ export class ImageUploadComponent {
           this.uploadProgress = Math.round(100 * event.loaded / event.total);
         } else if (event.type === HttpEventType.Response) {
           this.uploadSuccess = true;
-          this.uploadedImageUrls = event.body;
+            this.uploadedImageUrls = event.body;
           this.isUploading = false;
         }
       },
@@ -100,8 +100,9 @@ export class ImageUploadComponent {
 
   resetUpload(): void {
     this.selectedFiles = [];
-    this.previewUrls = [];
+      this.previewUrls = [];
     this.uploadProgress = 0;
+
     this.uploadSuccess = false;
     this.uploadError = '';
     this.uploadedImageUrls = [];
