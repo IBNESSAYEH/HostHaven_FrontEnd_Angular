@@ -17,17 +17,17 @@ export class RegisterComponent {
 
   constructor(
     private fb: FormBuilder,
-    private authService: AuthService,
+      private authService: AuthService,
     private router: Router
   ) {
     this.registerForm = this.fb.group({
       firstName: ['', [Validators.required, Validators.maxLength(20)]],
       lastName: ['', [Validators.required, Validators.maxLength(20)]],
-      email: ['', [Validators.required, Validators.email]],
+         email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
-      phone: ['', [Validators.required, Validators.pattern('^[0-9]{10}$')]],
+       phone: ['', [Validators.required, Validators.pattern('^[0-9]{10}$')]],
       profile: ['default-profile.jpg'],
-      role: [Role.GUEST]  // Default role is GUEST
+      role: [Role.GUEST]
     });
   }
 
@@ -35,7 +35,7 @@ export class RegisterComponent {
     if (this.registerForm.valid) {
       const registerData = {
         firstname: this.registerForm.value.firstName,
-        lastname: this.registerForm.value.lastName,
+          lastname: this.registerForm.value.lastName,
         email: this.registerForm.value.email,
         password: this.registerForm.value.password,
         phone: this.registerForm.value.phone,

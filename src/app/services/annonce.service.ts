@@ -13,7 +13,7 @@ export class AnnonceService {
 
   constructor(
     private http: HttpClient,
-    private authService: AuthService,
+      private authService: AuthService,
     private router: Router
   ) {}
 
@@ -38,23 +38,24 @@ export class AnnonceService {
       title: annonceData.title,
       description: annonceData.description,
       monthPrice: Number(annonceData.monthPrice),
-      weekPrice: annonceData.weekPrice ? Number(annonceData.weekPrice) : null,
+         weekPrice: annonceData.weekPrice ? Number(annonceData.weekPrice) : null,
       dayPrice: annonceData.dayPrice ? Number(annonceData.dayPrice) : null,
       adress: annonceData.adress,
       phone: annonceData.phone,
-      email: annonceData.email,
+        email: annonceData.email,
       cityId: annonceData.cityId,
       typeId: annonceData.typeId,
-      categoryId: annonceData.categoryId,
-      imageLinks: annonceData.imageLinks || [], // Include image links
+         categoryId: annonceData.categoryId,
+      imageLinks: annonceData.imageLinks || [],
       caracteristiques: {
         etage: Number(annonceData.caracteristiques.etage || 0),
         surface: Math.max(1, Number(annonceData.caracteristiques.surface || 1)),
         assenceur: Boolean(annonceData.caracteristiques.assenceur),
         balcon: Boolean(annonceData.caracteristiques.balcon),
-        terrasse: Boolean(annonceData.caracteristiques.terrasse),
+           terrasse: Boolean(annonceData.caracteristiques.terrasse),
         piscine: Boolean(annonceData.caracteristiques.piscine),
         jardin: Boolean(annonceData.caracteristiques.jardin),
+
         parking: Boolean(annonceData.caracteristiques.parking),
         numberRooms: Math.max(1, Number(annonceData.caracteristiques.numberRooms || 1)),
         numberSale: Math.max(0, Number(annonceData.caracteristiques.numberSale || 0)),
@@ -106,11 +107,11 @@ export class AnnonceService {
       );
   }
 
-  getAll(): Observable<Annonce[]> {
+    getAll(): Observable<Annonce[]> {
     return this.http.get<Annonce[]>(`${this.apiUrl}/annonces`);
   }
 
-  getById(id: string): Observable<Annonce> {
+   getById(id: string): Observable<Annonce> {
     return this.http.get<Annonce>(`${this.apiUrl}/annonces/${id}`);
   }
 
@@ -122,7 +123,7 @@ export class AnnonceService {
     return this.http.delete<void>(`${this.apiUrl}/annonces/${id}`, this.getAuthHeaders());
   }
 
-  getByUserId(userId: string): Observable<Annonce[]> {
+   getByUserId(userId: string): Observable<Annonce[]> {
     return this.http.get<Annonce[]>(`${this.apiUrl}/annonces/user/${userId}`);
   }
 
@@ -133,7 +134,7 @@ export class AnnonceService {
 
   changeStatus(id: string): Observable<Annonce> {
     return this.http.put<Annonce>(`${this.apiUrl}/annonces/${id}/change-status`, {}).pipe(
-      catchError(this.handleError)
+        catchError(this.handleError)
     );
   }
 }

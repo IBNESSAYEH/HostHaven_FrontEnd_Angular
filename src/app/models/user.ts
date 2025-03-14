@@ -43,7 +43,7 @@ export interface AdminUser {
   lastName: string;
     email: string;
   phone: string;
-  role: 'ADMIN' | 'USER' | 'HOST' | 'GUEST' | 'SUPER_HOST';
+   role: 'ADMIN'   | 'USER' |  'HOST' | 'GUEST' |  'SUPER_HOST';
   emailVerificationStatus: boolean;
   inscriptionDate: string;
 }
