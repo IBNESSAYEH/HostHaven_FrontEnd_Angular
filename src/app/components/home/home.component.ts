@@ -16,13 +16,13 @@ import { City, Type } from '../../models/annonce';
 export class HomeComponent {
   cities: City[] = [];
   types: Type[] = [];
-  selectedLocation: string = '';
+   selectedLocation: string = '';
   selectedType: string = '';
   selectedPriceRange: string = '';
 
   constructor(
     private router: Router,
-    private annonceService: AnnonceService
+     private annonceService: AnnonceService
   ) {}
 
   ngOnInit() {
@@ -37,23 +37,23 @@ export class HomeComponent {
 
     this.annonceService.getTypes().subscribe({
       next: (types) => this.types = types,
-      error: (error) => console.error('Error loading types:', error)
+       error: (error) => console.error('Error loading types:', error)
     });
   }
 
   onSearch() {
     let queryParams: any = {};
 
-    if (this.selectedLocation) {
+     if (this.selectedLocation) {
       queryParams.city = this.selectedLocation;
     }
 
-    if (this.selectedType) {
+     if (this.selectedType) {
       queryParams.type = this.selectedType;
     }
 
     if (this.selectedPriceRange) {
-      queryParams.priceRange = this.selectedPriceRange;
+       queryParams.priceRange = this.selectedPriceRange;
     }
 
     this.router.navigate(['/annonce-list'], {
