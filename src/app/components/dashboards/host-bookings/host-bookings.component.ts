@@ -16,9 +16,9 @@ import Swal from 'sweetalert2';
 })
 export class HostBookingsComponent implements OnInit {
   bookings: Booking[] = [];
-  properties: Annonce[] = [];
+    properties: Annonce[] = [];
   filteredBookings: Booking[] = [];
-  isLoading = true;
+   isLoading = true;
   error: string | null = null;
   statusFilter: string = 'all';
 
@@ -34,7 +34,7 @@ export class HostBookingsComponent implements OnInit {
   loadHostProperties() {
     const userId = this.authService.getUserId();
     if (!userId) {
-      this.error = 'User not found';
+       this.error = 'User not found';
       this.isLoading = false;
       return;
     }
@@ -63,8 +63,6 @@ export class HostBookingsComponent implements OnInit {
 
     let completedRequests = 0;
     const allBookings: Booking[] = [];
-
-    // If no properties, don't try to load bookings
     if (bookingRequests.length === 0) {
       this.isLoading = false;
       return;
@@ -106,7 +104,6 @@ export class HostBookingsComponent implements OnInit {
       this.filteredBookings = this.bookings.filter(booking => booking.status === this.statusFilter);
     }
 
-    // Sort by date (most recent first)
     this.filteredBookings.sort((a, b) => {
       const dateA = new Date(a.startDate).getTime();
       const dateB = new Date(b.startDate).getTime();
@@ -120,10 +117,10 @@ export class HostBookingsComponent implements OnInit {
     const actionName = newStatus === 'confirmed' ? 'confirm' : newStatus === 'cancelled' ? 'cancel' : 'update';
 
     Swal.fire({
-      title: `${actionName.charAt(0).toUpperCase() + actionName.slice(1)} Booking?`,
+       title: `${actionName.charAt(0).toUpperCase() + actionName.slice(1)} Booking?`,
       text: `Are you sure you want to ${actionName} this booking?`,
       icon: 'question',
-      showCancelButton: true,
+        showCancelButton: true,
       confirmButtonText: `Yes, ${actionName} it!`,
       cancelButtonText: 'No, keep it'
     }).then((result) => {
@@ -134,7 +131,6 @@ export class HostBookingsComponent implements OnInit {
   }
 
   private updateBookingStatus(bookingId: string, newStatus: string) {
-    // Map the status to the correct endpoint
     let endpoint: string;
     if (newStatus === 'cancelled') {
       endpoint = 'cancel';
@@ -155,7 +151,7 @@ export class HostBookingsComponent implements OnInit {
         Swal.fire({
           title: 'Success!',
           text: `Booking has been ${newStatus}`,
-          icon: 'success',
+            icon: 'success',
           timer: 2000,
           showConfirmButton: false
         });
@@ -173,7 +169,7 @@ export class HostBookingsComponent implements OnInit {
   }
 
   setStatusFilter(status: string) {
-    this.statusFilter = status;
+     this.statusFilter = status;
     this.applyFilters();
   }
 
@@ -187,7 +183,7 @@ export class HostBookingsComponent implements OnInit {
 
   calculateDuration(startDate: Date | string, endDate: Date | string): number {
     const start = new Date(startDate);
-    const end = new Date(endDate);
+     const end = new Date(endDate);
     const timeDiff = end.getTime() - start.getTime();
     return Math.ceil(timeDiff / (1000 * 3600 * 24));
   }

@@ -22,39 +22,39 @@ export class AdminDashboardComponent implements OnInit {
   activeTab: 'all' | 'active' | 'inactive' | 'users' = 'all';
 
   properties: Annonce[] = [];
-  filteredProperties: Annonce[] = [];
+   filteredProperties: Annonce[] = [];
   cities: City[] = [];
 
   searchTerm: string = '';
-  filterCity: string = '';
+   filterCity: string = '';
 
   currentPage: number = 1;
-  itemsPerPage: number = 10;
+   itemsPerPage: number = 10;
   totalPages: number = 1;
 
   isLoading: boolean = true;
-  error: string | null = null;
+   error: string | null = null;
 
   totalProperties: number = 0;
-  activeProperties: number = 0;
+    activeProperties: number = 0;
   inactiveProperties: number = 0;
-  totalUsers: number = 0;
+   totalUsers: number = 0;
 
   propertyChangeRate: number = 12;
-  userChangeRate: number = 8;
+    userChangeRate: number = 8;
   activePropertyRatio: number = 0;
   inactivePropertyRatio: number = 0;
   Math = Math;
 
   constructor(
     private annonceService: AnnonceService,
-    private userService: UsersService,
+     private userService: UsersService,
     private authService: AuthService
   ) {}
 
   ngOnInit(): void {
     this.loadAllProperties();
-    this.loadCities();
+     this.loadCities();
     this.loadUserCount();
   }
 
@@ -65,14 +65,14 @@ export class AdminDashboardComponent implements OnInit {
     this.annonceService.getAll().subscribe({
       next: (data) => {
         this.properties = data;
-        this.calculateStatistics();
+         this.calculateStatistics();
         this.applyFilters();
         this.isLoading = false;
       },
       error: (err) => {
         console.error('Error loading properties:', err);
-        this.error = 'Failed to load properties. Please try again later.';
-        this.isLoading = false;
+         this.error = 'Failed to load properties. Please try again later.';
+         this.isLoading = false;
         this.showToast('Error', 'Failed to load properties. Please try again later.', 'error');
       }
     });
@@ -104,7 +104,7 @@ export class AdminDashboardComponent implements OnInit {
 
   calculateStatistics(): void {
     this.totalProperties = this.properties.length;
-    this.activeProperties = this.properties.filter(p => p.status).length;
+     this.activeProperties = this.properties.filter(p => p.status).length;
     this.inactiveProperties = this.properties.filter(p => !p.status).length;
 
     this.activePropertyRatio = this.totalProperties > 0
@@ -128,12 +128,12 @@ export class AdminDashboardComponent implements OnInit {
     if (this.searchTerm && this.searchTerm.trim() !== '') {
       const term = this.searchTerm.toLowerCase().trim();
       filtered = filtered.filter(p =>
-        p.title.toLowerCase().includes(term) ||
+         p.title.toLowerCase().includes(term) ||
         p.description.toLowerCase().includes(term) ||
-        p.adress.toLowerCase().includes(term) ||
+           p.adress.toLowerCase().includes(term) ||
         p.city.name.toLowerCase().includes(term) ||
         p.user.firstName.toLowerCase().includes(term) ||
-        p.user.lastName.toLowerCase().includes(term) ||
+         p.user.lastName.toLowerCase().includes(term) ||
         `${p.user.firstName.toLowerCase()} ${p.user.lastName.toLowerCase()}`.includes(term) ||
         p.user.email.toLowerCase().includes(term)
       );
@@ -153,7 +153,7 @@ export class AdminDashboardComponent implements OnInit {
 
   resetFilters(): void {
     this.searchTerm = '';
-    this.filterCity = '';
+     this.filterCity = '';
     this.applyFilters();
     this.showToast('Filters Reset', 'All search filters have been cleared', 'info');
   }
@@ -161,12 +161,12 @@ export class AdminDashboardComponent implements OnInit {
   refreshData(): void {
     Swal.fire({
       title: 'Refreshing Data',
-      html: 'Please wait while we fetch the latest data...',
+       html: 'Please wait while we fetch the latest data...',
       allowOutsideClick: false,
       didOpen: () => {
         Swal.showLoading();
         this.loadAllProperties();
-        this.loadCities();
+         this.loadCities();
         this.loadUserCount();
 
         setTimeout(() => {
@@ -225,10 +225,10 @@ export class AdminDashboardComponent implements OnInit {
 
     Swal.fire({
       title: `${statusText.charAt(0).toUpperCase() + statusText.slice(1)} property?`,
-      text: `Are you sure you want to ${statusText} "${property.title}"?`,
+       text: `Are you sure you want to ${statusText} "${property.title}"?`,
       icon: 'question',
       showCancelButton: true,
-      confirmButtonColor: '#3085d6',
+        confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
       confirmButtonText: `Yes, ${statusText} it!`
     }).then((result) => {
