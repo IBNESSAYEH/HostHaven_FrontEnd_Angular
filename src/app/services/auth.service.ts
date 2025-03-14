@@ -8,16 +8,16 @@ import { jwtDecode } from 'jwt-decode';
 })
 export class AuthService {
   private apiUrl = 'http://localhost:8080/api/auth';
-  private tokenKey = 'token';
+    private tokenKey = 'token';
   userSubject = new BehaviorSubject<any>(null);
-  public user$ = this.userSubject.asObservable();
+   public user$ = this.userSubject.asObservable();
 
   constructor(private http: HttpClient) {
     this.loadStoredToken();
   }
 
   private loadStoredToken() {
-    const token = localStorage.getItem(this.tokenKey);
+      const token = localStorage.getItem(this.tokenKey);
     if (token) {
       try {
         const decodedToken = this.decodeToken(token);
@@ -31,7 +31,7 @@ export class AuthService {
     }
   }
 
-  getCurrentUser(): any {
+  getCurrentUser():  any {
     const token = this.getToken();
     if (!token) return null;
 
@@ -39,9 +39,9 @@ export class AuthService {
       const decodedToken = this.decodeToken(token);
       return {
         firstName: decodedToken.firstName || '',
-        lastName: decodedToken.lastNAme || '',
+         lastName: decodedToken.lastNAme || '',
         email: decodedToken.email || '',
-        phone: decodedToken.phone || '',
+          phone: decodedToken.phone || '',
         role: decodedToken.role || '',
         userId: decodedToken.userId || ''
       };
@@ -69,7 +69,7 @@ export class AuthService {
       .pipe(
         tap(response => {
           if (response && response.token) {
-            localStorage.setItem(this.tokenKey, response.token);
+              localStorage.setItem(this.tokenKey, response.token);
             const decodedToken = this.decodeToken(response.token);
             this.userSubject.next(decodedToken);
           }

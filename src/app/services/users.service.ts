@@ -23,12 +23,12 @@ export class UsersService {
 
     updateProfile(userId: string, userData: {
       firstName: string;
-      lastName: string;
+        lastName: string;
       phone: string;
     }): Observable<UserData> {
       const requestData = {
         firstName: userData.firstName,
-        lastName: userData.lastName,
+         lastName: userData.lastName,
         phone: userData.phone,
         role: this.authService.getCurrentUser()?.role
       };
@@ -61,7 +61,7 @@ export class UsersService {
       );
     }
 
-    updateUserRole(userId: string, role: string): Observable<AdminUser> {
+     updateUserRole(userId: string, role: string): Observable<AdminUser> {
       const roleRequest = {
         role: role
       };
@@ -80,9 +80,9 @@ export class UsersService {
         id: user.id.toString(),
         firstName: user.firstName || '',
         lastName: user.lastName || '',
-        email: user.email || '',
+          email: user.email || '',
         phone: user.phone || '',
-        role: user.role || 'GUEST',
+          role: user.role || 'GUEST',
         emailVerificationStatus: user.emailVerificationStatus || false,
         inscriptionDate: user.inscriptionDate || new Date().toISOString()
       };
