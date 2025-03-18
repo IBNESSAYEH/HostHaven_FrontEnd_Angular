@@ -1,0 +1,101 @@
+<div class="bg-white shadow-sm rounded-lg p-6">
+  <h2 class="text-xl font-bold mb-4">Reviews and Ratings</h2>
+
+  <div class="flex items-center mb-6">
+    <div class="flex items-center">
+      <div class="text-2xl font-bold mr-2">{{ averageRating.toFixed(1) }}</div>
+      <div class="flex">
+        <ng-container *ngFor="let star of getStarsArray(Math.round(averageRating))">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-yellow-500" viewBox="0 0 20 20" fill="currentColor">
+            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+          </svg>
+        </ng-container>
+        <ng-container *ngFor="let star of getEmptyStarsArray(Math.round(averageRating))">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-300" viewBox="0 0 20 20" fill="currentColor">
+            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+          </svg>
+        </ng-container>
+      </div>
+      <div class="ml-2 text-sm text-gray-600">{{ reviews.length }} reviews</div>
+    </div>
+  </div>
+
+  <div *ngIf="authService.isAuthenticated()" class="mb-8 p-4 bg-gray-50 rounded-lg">
+    <h3 class="font-semibold mb-3">Write a Review</h3>
+    <div class="flex items-center mb-4">
+      <span class="mr-2">Rating:</span>
+      <div class="flex">
+        <ng-container *ngFor="let i of [1,2,3,4,5]">
+          <button
+            type="button"
+            (click)="newReview.stars = i"
+            class="focus:outline-none">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-6 w-6"
+              [ngClass]="i <= newReview.stars ? 'text-yellow-500' : 'text-gray-300'"
+              viewBox="0 0 20 20"
+              fill="currentColor">
+              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+            </svg>
+          </button>
+        </ng-container>
+      </div>
+    </div>
+    <button
+      (click)="submitReview()"
+      class="btn btn-primary btn-sm">
+      Submit Review
+    </button>
+  </div>
+
+  <div *ngIf="!authService.isAuthenticated()" class="mb-8 p-4 bg-gray-50 rounded-lg text-center">
+    <p class="mb-2">Please login to leave a review</p>
+    <a routerLink="/auth/login" class="btn btn-primary btn-sm">Login</a>
+  </div>
+
+  <div *ngIf="isLoading" class="flex justify-center my-4">
+    <span class="loading loading-spinner loading-md"></span>
+  </div>
+
+  <div *ngIf="error" class="alert alert-error mb-4">
+    <span>{{ error }}</span>
+  </div>
+
+  <div *ngIf="!isLoading && reviews.length === 0" class="text-center py-6 text-gray-500">
+    No reviews yet. Be the first to review this property!
+  </div>
+
+  <div *ngIf="!isLoading && reviews.length > 0" class="space-y-6">
+    <div *ngFor="let review of reviews" class="border-b pb-4 last:border-0">
+      <div class="flex justify-between items-start">
+        <div>
+          <div class="flex items-center mb-1">
+            <div class="flex mr-2">
+              <ng-container *ngFor="let star of getStarsArray(review.stars)">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-yellow-500" viewBox="0 0 20 20" fill="currentColor">
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                </svg>
+              </ng-container>
+              <ng-container *ngFor="let star of getEmptyStarsArray(review.stars)">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-300" viewBox="0 0 20 20" fill="currentColor">
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                </svg>
+              </ng-container>
+            </div>
+            <div class="font-medium">{{ review.user?.firstName || 'User' }} {{ review.user?.lastName || '' }}</div>
+          </div>
+          <div class="text-sm text-gray-500">{{ formatDate(review.createdAt) }}</div>
+        </div>
+
+        <button *ngIf="canDeleteReview(review)"
+                (click)="deleteReview(review.id)"
+                class="text-red-600 hover:text-red-800">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

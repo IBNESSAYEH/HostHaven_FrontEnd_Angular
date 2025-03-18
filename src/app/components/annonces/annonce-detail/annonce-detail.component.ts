@@ -4,7 +4,8 @@ import { FormsModule } from "@angular/forms";
 import { ActivatedRoute, RouterLink } from "@angular/router";
 import { Annonce } from "../../../models/annonce";
 import { AnnonceService } from "../../../services/annonce.service";
-
+import { PropertyCommentsComponent } from "../../property-comments/property-comments.component";
+import { PropertyReviewsComponent } from "../../property-reviews/property-reviews.component";
 interface ContactForm {
   name: string;
   email: string;
@@ -14,7 +15,13 @@ interface ContactForm {
 @Component({
   selector: 'app-annonce-detail',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule],
+  imports: [
+    CommonModule,
+    RouterLink,
+    FormsModule,
+    PropertyReviewsComponent,
+    PropertyCommentsComponent
+  ],
   templateUrl: './annonce-detail.component.html',
   styleUrls: ['./annonce-detail.component.scss']
 })
@@ -24,6 +31,7 @@ export class AnnonceDetailComponent implements OnInit {
   error: string | null = null;
   activeImageIndex = 0;
   defaultImagePath = 'assets/images/pixlr-image-generator-1ebfe583-0068-4415-9b35-5330d6ac9f10.png';
+  Math = Math;
 
   contactForm: ContactForm = {
     name: '',
@@ -70,6 +78,7 @@ export class AnnonceDetailComponent implements OnInit {
 
   onContactSubmit() {
     console.log('Contact form submitted:', this.contactForm);
+
     this.contactForm = {
       name: '',
       email: '',
