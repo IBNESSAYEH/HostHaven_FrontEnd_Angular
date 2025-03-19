@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import Swal from 'sweetalert2';
 import { AuthService } from '../../services/auth.service';
 
@@ -58,9 +58,6 @@ export class PropertyCommentsComponent implements OnInit {
           console.error('Error loading comments:', err);
           this.error = 'Failed to load comments';
           this.isLoading = false;
-        },
-        complete: () => {
-          this.isLoading = false;
         }
       });
   }
@@ -91,22 +88,36 @@ export class PropertyCommentsComponent implements OnInit {
       return;
     }
 
-    this.http.post<Comment>('http://localhost:8080/api/comments', commentData, {
-      headers: { Authorization: `Bearer ${token}` }
-    }).subscribe({
-      next: (response) => {
-        this.comments.unshift(response);
-        this.newComment = '';
-      },
-      error: (err) => {
-        console.error('Error submitting comment:', err);
-        Swal.fire({
-          title: 'Error',
-          text: err.error?.message || 'Failed to submit comment',
-          icon: 'error'
-        });
-      }
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
     });
+
+    this.isLoading = true;
+    this.http.post<Comment>('http://localhost:8080/api/comments', commentData, { headers })
+      .subscribe({
+        next: (response) => {
+          this.isLoading = false;
+          this.comments.unshift(response);
+          this.newComment = '';
+          Swal.fire({
+            title: 'Success',
+            text: 'Your comment has been posted',
+            icon: 'success',
+            timer: 1500,
+            showConfirmButton: false
+          });
+        },
+        error: (err) => {
+          this.isLoading = false;
+          console.error('Error submitting comment:', err);
+          Swal.fire({
+            title: 'Error',
+            text: err.error?.message || 'Failed to submit comment',
+            icon: 'error'
+          });
+        }
+      });
   }
 
   deleteComment(commentId: string): void {
@@ -125,18 +136,24 @@ export class PropertyCommentsComponent implements OnInit {
           return;
         }
 
-        this.http.delete(`http://localhost:8080/api/comments/${commentId}`, {
-          headers: { Authorization: `Bearer ${token}` }
-        }).subscribe({
-          next: () => {
-            Swal.fire('Deleted!', 'Your comment has been deleted.', 'success');
-            this.comments = this.comments.filter(comment => comment.id !== commentId);
-          },
-          error: (err) => {
-            console.error('Error deleting comment:', err);
-            Swal.fire('Error', 'Failed to delete comment', 'error');
-          }
+        const headers = new HttpHeaders({
+          'Authorization': `Bearer ${token}`
         });
+
+        this.isLoading = true;
+        this.http.delete(`http://localhost:8080/api/comments/${commentId}`, { headers })
+          .subscribe({
+            next: () => {
+              this.isLoading = false;
+              this.comments = this.comments.filter(comment => comment.id !== commentId);
+              Swal.fire('Deleted!', 'Your comment has been deleted.', 'success');
+            },
+            error: (err) => {
+              this.isLoading = false;
+              console.error('Error deleting comment:', err);
+              Swal.fire('Error', err.error?.message || 'Failed to delete comment', 'error');
+            }
+          });
       }
     });
   }

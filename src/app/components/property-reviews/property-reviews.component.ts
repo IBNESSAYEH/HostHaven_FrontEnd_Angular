@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import Swal from 'sweetalert2';
 import { AuthService } from '../../services/auth.service';
 
@@ -10,6 +10,7 @@ interface Review {
   id: string;
   stars: number;
   createdAt: string;
+  updated: boolean;
   user: {
     id: string;
     firstName: string;
@@ -64,9 +65,6 @@ export class PropertyReviewsComponent implements OnInit {
           console.error('Error loading reviews:', err);
           this.error = 'Failed to load reviews';
           this.isLoading = false;
-        },
-        complete: () => {
-          this.isLoading = false;
         }
       });
   }
@@ -103,28 +101,35 @@ export class PropertyReviewsComponent implements OnInit {
       return;
     }
 
-    this.http.post<Review>('http://localhost:8080/api/reviews', this.newReview, {
-      headers: { Authorization: `Bearer ${token}` }
-    }).subscribe({
-      next: (response) => {
-        Swal.fire({
-          title: 'Success!',
-          text: 'Your review has been submitted',
-          icon: 'success'
-        });
-        this.reviews.unshift(response);
-        this.loadAverageRating();
-        this.newReview.stars = 5;
-      },
-      error: (err) => {
-        console.error('Error submitting review:', err);
-        Swal.fire({
-          title: 'Error',
-          text: err.error?.message || 'Failed to submit review',
-          icon: 'error'
-        });
-      }
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
     });
+
+    this.isLoading = true;
+    this.http.post<Review>('http://localhost:8080/api/reviews', this.newReview, { headers })
+      .subscribe({
+        next: (response) => {
+          this.isLoading = false;
+          Swal.fire({
+            title: 'Success!',
+            text: 'Your review has been submitted',
+            icon: 'success'
+          });
+          this.reviews.unshift(response);
+          this.loadAverageRating();
+          this.newReview.stars = 5;
+        },
+        error: (err) => {
+          this.isLoading = false;
+          console.error('Error submitting review:', err);
+          Swal.fire({
+            title: 'Error',
+            text: err.error?.message || 'Failed to submit review',
+            icon: 'error'
+          });
+        }
+      });
   }
 
   deleteReview(reviewId: string): void {
@@ -143,26 +148,32 @@ export class PropertyReviewsComponent implements OnInit {
           return;
         }
 
-        this.http.delete(`http://localhost:8080/api/reviews/${reviewId}`, {
-          headers: { Authorization: `Bearer ${token}` }
-        }).subscribe({
-          next: () => {
-            Swal.fire('Deleted!', 'Your review has been deleted.', 'success');
-            this.reviews = this.reviews.filter(review => review.id !== reviewId);
-            this.loadAverageRating();
-          },
-          error: (err) => {
-            console.error('Error deleting review:', err);
-            Swal.fire('Error', 'Failed to delete review', 'error');
-          }
+        const headers = new HttpHeaders({
+          'Authorization': `Bearer ${token}`
         });
+
+        this.isLoading = true;
+        this.http.delete(`http://localhost:8080/api/reviews/${reviewId}`, { headers })
+          .subscribe({
+            next: () => {
+              this.isLoading = false;
+              this.reviews = this.reviews.filter(review => review.id !== reviewId);
+              this.loadAverageRating();
+              Swal.fire('Deleted!', 'Your review has been deleted.', 'success');
+            },
+            error: (err) => {
+              this.isLoading = false;
+              console.error('Error deleting review:', err);
+              Swal.fire('Error', err.error?.message || 'Failed to delete review', 'error');
+            }
+          });
       }
     });
   }
 
   canDeleteReview(review: Review): boolean {
     const currentUser = this.authService.getCurrentUser();
-    return currentUser?.email === review.user.email || currentUser?.role === 'ADMIN';
+    return currentUser?.email === review.user?.email || currentUser?.role === 'ADMIN';
   }
 
   getStarsArray(rating: number): number[] {
