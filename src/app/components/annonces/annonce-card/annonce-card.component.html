@@ -56,18 +56,21 @@
 
     <div class="flex justify-between items-center mt-auto">
       <div class="text-sm text-gray-500">${{annonce.dayPrice}}/day</div>
-      <div class="space-x-2">
+      <div class="space-x-2 flex items-center">
         <button class="btn btn-outline btn-sm" [routerLink]="['/annonces', annonce.id]">
           View Details
         </button>
-        <a [routerLink]="['/annonces', annonce.id, 'book']" class="btn btn-primary btn-lg gap-2 mt-4">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+
+        <a [routerLink]="['/annonces', annonce.id, 'book']" class="btn btn-primary btn-sm flex items-center gap-1">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
           </svg>
           Book Now
         </a>
-
       </div>
+
+
     </div>
   </div>
 </div>
