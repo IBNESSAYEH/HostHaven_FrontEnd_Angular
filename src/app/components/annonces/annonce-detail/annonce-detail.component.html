@@ -1,5 +1,4 @@
 <div class="relative">
-  <!-- Hero Background -->
   @if (isLoading) {
     <div class="flex justify-center items-center min-h-[calc(100vh-64px)]">
       <div class="flex flex-col items-center">
@@ -17,7 +16,6 @@
       </div>
     </div>
   } @else if (annonce) {
-    <!-- Property Header - Professional Navigation Bar -->
     <div class="sticky top-0 z-10 bg-white shadow-sm border-b">
       <div class="container mx-auto">
         <div class="flex items-center justify-between h-16 px-4 md:px-6">
@@ -46,12 +44,9 @@
       </div>
     </div>
 
-    <!-- Main Content Section with improved layout -->
     <div class="container mx-auto px-4 md:px-6 py-8">
       <div class="flex flex-col lg:flex-row gap-8">
-        <!-- Left Column: Property Images & Details -->
         <div class="w-full lg:w-2/3">
-          <!-- Property Title Section -->
           <div class="mb-6">
             <div class="flex items-center gap-2 mb-2">
               <span class="badge badge-primary">{{annonce.type.name}}</span>
@@ -68,7 +63,6 @@
             </div>
           </div>
 
-          <!-- Main Image Gallery - Professional Look -->
           <div class="bg-gray-50 rounded-xl overflow-hidden mb-6 shadow-sm">
             <div class="aspect-w-16 aspect-h-9">
               <img
@@ -78,7 +72,6 @@
               >
             </div>
 
-            <!-- Thumbnails Row -->
             @if (annonce.images && annonce.images.length > 1) {
               <div class="bg-white p-3 flex overflow-x-auto gap-2 border-t">
                 @for (image of annonce.images; track image.id) {
@@ -93,7 +86,6 @@
             }
           </div>
 
-          <!-- Property Details Tabs -->
           <div class="bg-white rounded-lg shadow-sm border mb-8">
             <div class="border-b">
               <div class="flex overflow-x-auto">
@@ -188,19 +180,15 @@
             </div>
           </div>
 
-          <!-- Reviews Section -->
-          <app-property-reviews [annonceId]="annonce.id"></app-property-reviews>
+          <!-- <app-property-reviews [annonceId]="annonce.id"></app-property-reviews> -->
 
-          <!-- Comments Section -->
           <div class="mt-8">
             <app-property-comments [annonceId]="annonce.id"></app-property-comments>
           </div>
         </div>
 
-        <!-- Right Column: Sticky Pricing & Contact Section -->
         <div class="w-full lg:w-1/3">
           <div class="sticky top-24">
-            <!-- Price Card - Clean Professional Design -->
             <div class="card bg-white shadow-md rounded-lg border overflow-hidden mb-6">
               <div class="bg-gray-50 p-4 border-b">
                 <div class="text-xl font-bold text-gray-800">Pricing Details</div>
@@ -244,13 +232,11 @@
               </div>
             </div>
 
-            <!-- Contact Form - Professional Style -->
             <div class="card bg-white shadow-md rounded-lg border overflow-hidden">
               <div class="bg-gray-50 p-4 border-b">
                 <div class="text-xl font-bold text-gray-800">Contact Property Owner</div>
               </div>
               <div class="p-6">
-                <!-- Host Info -->
                 <div class="flex items-center gap-4 mb-6 pb-4 border-b">
                   <div class="avatar">
                     <div class="w-12 h-12 rounded-full bg-gradient-to-r from-primary to-secondary flex items-center justify-center text-white font-bold text-lg">
