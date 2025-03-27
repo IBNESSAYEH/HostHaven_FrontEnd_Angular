@@ -16,25 +16,26 @@ import { AdminGuard } from "./guards/admin-guard.guard";
 import { BookingComponent } from "./components/booking/booking.component";
 import { BookingSuccessComponent } from "./components/booking-success/booking-success/booking-success.component";
 import { MyBookingsComponent } from "./components/my-bookings/my-bookings/my-bookings.component";
+import { HostGuardGuard } from "./guards/host-guard.guard";
+import { NoAuthGuard } from "./guards/no-auth.guard";
 
 export const routes: Routes = [
 
   {
     path: 'auth',
     children: [
-      { path: 'login', component: LoginComponent },
-      { path: 'register', component: RegisterComponent }
-    ]
+      { path: 'login', component: LoginComponent, canActivate: [NoAuthGuard] },
+      { path: 'register', component: RegisterComponent, canActivate: [NoAuthGuard] },
+    ],
   },
   {
     path: 'profile',
     component: ProfileComponent,
-    canActivate: [() => inject(AuthGuard).canActivate()]
+    canActivate: [AuthGuard],
   },
   {
     path: 'ebanky-news',
     component: BankNewsComponent,
-    canActivate: [() => inject(AuthGuard).canActivate()]
   },
   {
     path: '',
@@ -44,17 +45,17 @@ export const routes: Routes = [
   {
     path: 'annonces/create',
     component: CreateAnnonceComponent,
-    canActivate: [() => inject(AuthGuard).canActivate()]
+    canActivate: [HostGuardGuard],
   },
   {
     path: 'annonces/edit/:id',
     component: UpdateAnnonceComponent,
-    canActivate: [() => inject(AuthGuard).canActivate()]
+    canActivate: [AuthGuard],
   },
   {
     path: 'annonce-list',
     component: AnnonceListComponent,
-    canActivate: [() => inject(AuthGuard).canActivate()]
+
   },
   {
     path: 'annonces/:id',
@@ -62,7 +63,7 @@ export const routes: Routes = [
   },{
     path: 'dashboard/host',
     component: HostDashboardComponent,
-    canActivate: [() => inject(AuthGuard).canActivate()]
+    canActivate: [HostGuardGuard],
   },{
     path: 'dashboard/admin',
     component: AdminDashboardComponent,
@@ -71,20 +72,20 @@ export const routes: Routes = [
   {
     path: 'annonces/:id/book',
     component: BookingComponent,
-    canActivate: [() => inject(AuthGuard).canActivate()]
+    canActivate: [AuthGuard],
   },
   {
     path: 'booking-success',
     component: BookingSuccessComponent,
-    canActivate: [() => inject(AuthGuard).canActivate()]
+    canActivate: [AuthGuard],
   },
   {
     path: 'bookings',
     component: MyBookingsComponent,
-    canActivate: [() => inject(AuthGuard).canActivate()]
+    canActivate: [AuthGuard],
   },
   {
     path: '**',
-    redirectTo: '/auth/login'
+    redirectTo: '/'
   }
 ];
